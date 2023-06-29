@@ -20,12 +20,12 @@ Active Directory Enumeration (1 hr)
     - Enumeration with PowerShell - PowerView
     - Enumeration with BloodHound
   - Brandon - Detecting AD Enumeration (20 mins)
-Increased LDAP queries
+    - Increased LDAP queries
     - Unusual PowerShell commands
     - Suspicious network patterns
     - Detecting enumeration activity: log monitoring and IDS
     - Defensive Measures: least privilege and hardened infrastructure
-  - Aaron - Advancing enumeration techniques (20 mins)
+  - Aaron - [Advancing enumeration techniques](./advanced_enumderation.md) (20 mins)
     - ADSISEARCHER type accelerator and POWERSHELL_ISE
     - LDAP queries via COM by using ADO's ADSI provider
     - Potential detections
@@ -37,7 +37,7 @@ Active Directory Credential Grabbing (1 hr)
     - Unusual processes and services
     - Exploring event logs
     - Defensive measures: MFA and audit/monitor accounts
-  - Aaron - Advanced Credential Grabbing (20 mins)
+  - Aaron - [Advanced Credential Grabbing](./advanced_credentials.md) (20 mins)
     - Process impersonation
     - Process Herpaderping(Yep its a thing)
     - Potential Detections
@@ -51,7 +51,7 @@ Kerberoasting (1 hr)
     - Suspicious PowerShell activity
     - Unexpected encryption downgrade attempts
     - Defensive measures: least privilege access, monitor service accounts, and strong encryption for service account tickets
-  - Aaron - Advanced Kerberoasting Techniques (20 minutes)
+  - Aaron - [Advanced Kerberoasting Techniques](./advanced_kerberoast.md) (20 minutes)
     - ADSISEARCHER and From Scratch Ticket Requests
     - Certified Pre-Owned Certificate Creation for ADCS
     - Potential Detections
