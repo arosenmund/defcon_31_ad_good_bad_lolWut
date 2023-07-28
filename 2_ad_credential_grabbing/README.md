@@ -7,5 +7,5 @@
 ## Detecting Common Attacks
 
 
-## Evading Detections
+## Advanced Credential Grabbing & Evading Detections
 

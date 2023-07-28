@@ -1,11 +1,9 @@
-# Credential Grabbing
+# Kerberoasting
+
+## Common Kerberoasting Tools
 
 
-## Common Credential Grabbing Attacks
+## Detecting Kerberaosting
 
+## Advanced Kerberoasting & Evading Detections
 
-
-## Detecting Common Attacks
-
-
-## Credential Grabbing with Defense Evasion
