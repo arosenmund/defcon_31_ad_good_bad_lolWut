@@ -11,7 +11,7 @@ https://www.pluralsight.com/free
 
 ## Navigating the Lab
 
-This lab consists of 5 different hosts.  You can switch between them freely by pressing ctrl+shift+alt > then clicking the top left drop down.
+This lab consists of 5 different hosts within the `WHEEL` domain. You can switch between them freely by pressing ctrl+shift+alt > then clicking the top left drop down.
 
 The devices are as follows:
 
