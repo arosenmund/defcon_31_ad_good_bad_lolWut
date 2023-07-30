@@ -23,6 +23,4 @@ The devices are as follows:
 | THESTEDDING | ELK server | The blue team's detection server |
 | ???? | ???? | ???? |
 
-**put in a diagram**
-
-
+![](DC31_Diagram.png)
