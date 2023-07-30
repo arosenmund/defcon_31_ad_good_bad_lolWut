@@ -15,12 +15,13 @@ This lab consists of 5 different hosts.  You can switch between them freely by p
 
 The devices are as follows:
 
-**make a table**
-Domain Controller
-Client
-File Server
-ELK Stack
-
+| Hostname | Type | Description |
+| ---- | ---- | ---- |
+| TWORIVERS | Terminal Services server | Terminal Services (a.k.a. Remote Desktop Gateway) server |
+| TARVALON | Domain Controller | The primary domain controller (PDC) for the domain |
+| DRAGONMOUNT | File server | File server for network share mounts and Windows-based backups |
+| THESTEDDING | ELK server | The blue team's detection server |
+| ???? | ???? | ???? |
 
 **put in a diagram**
 
