@@ -1,5 +1,5 @@
 # Advanced Enumeration
-
+`[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()`
 ## **Playbook ID: 4.05** - T1087.002 - Internal Enumeration using [ADSI] - **MSEL Event ID: AT1-5**
 
 Target: it-user10
