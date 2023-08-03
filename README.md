@@ -1,6 +1,31 @@
 # Active Directory Attacks: The Good, The Bad, and the LoLWUT?
 
-## Introduction ()
+## Introduction to Active Director Post Exploitation
+
+Welcome to our Defcon Workshop!  This is going to be an intense 4 hours, but our commitment to you is that everyone will get something out of this. Whether red team, blue team, or just here for the lolz.  
+
+This is an extremely hands on workshop.  However, the lab is hosted over the internet by Pluralsight **FOR FREE** (thanks pluralsight).  Each of you will get an individual lab environment, but it does take some setup from you.
+
+While we introduce ourselves.
+
+[Aaron Rosenmund](AaronRosenmund.com)
+[Brandon DeVault](DevaultSecurity.com)
+[Ryan Chapman](https://incidentresponse.training/)
+
+Please proceed to the [Setup](./0_setup/README.md) page to get your lab environment started.
+
+
+
+
+
+
+
+
+
+
+
+
+Outline:
 
 
 Introduction (15 mins)
