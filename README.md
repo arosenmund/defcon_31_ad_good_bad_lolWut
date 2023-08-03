@@ -8,9 +8,9 @@ This is an extremely hands on workshop.  However, the lab is hosted over the int
 
 While we introduce ourselves.
 
-[Aaron Rosenmund](AaronRosenmund.com)
-[Brandon DeVault](DevaultSecurity.com)
-[Ryan Chapman](https://incidentresponse.training/)
+- [Aaron Rosenmund](AaronRosenmund.com)
+- [Brandon DeVault](DevaultSecurity.com)
+- [Ryan Chapman](https://incidentresponse.training/)
 
 Please proceed to the [Setup](./0_setup/README.md) page to get your lab environment started.
 
