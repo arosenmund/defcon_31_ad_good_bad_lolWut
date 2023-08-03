@@ -15,8 +15,16 @@ While we introduce ourselves.
 Please proceed to the [Setup](./0_setup/README.md) page to get your lab environment started.
 
 
+All of the information you need to follow along with the workshop, is included in the following sections:
 
+### [Active Directory Enumeration](./1_enumeration/)
+**description here**
 
+### [Active Directory Credential Grabbing](./2_ad_credential_grabbing/)
+**description here**
+
+### [Active Directory Kerberoasting](./3_kerberoasting/)
+**description here**
 
 
 
