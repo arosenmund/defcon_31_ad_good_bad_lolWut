@@ -1,13 +1,8 @@
 # Advanced Kerberoasting
 
-
-## **Playbook ID: 4.06** - Ad Exploitation SPN Kerberoasting - **MSEL Event ID: AT1-6**
-
-C:\\Users\\Public\\Desktop\\LAB_FILES\\assets\\custom-procdump\\nimdump.dll
-
-
-
 ## Roast like a Ghost
+
+
 
 1. Now that you have the SAM account names, perform a subsquent query to obtain the SPN names. These will be used to perform targeted kerberoasting attacks by obtaining the kerberos pre-authentication ticket hash from the DC.
 
