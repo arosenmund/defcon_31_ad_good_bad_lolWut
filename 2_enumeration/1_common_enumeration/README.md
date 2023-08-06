@@ -1,40 +1,6 @@
 # Common Enumeration
 
-Welcome to the common enumeration section! In this workshop, you will be acting as the threat actor (TA). To begin, you will be connecting to the "Windows Attack Server" system within the range. This system serves as the external system from which the TA begins their attack.
-- Yes, this system is technically on the same network as the rest of the servers. You're pretending as though it's external to the network.
-
-You will be connecting to the victim network via RDP. Though you will simply be RDP'ing to the initial system, `TWORIVERS`, we are emulating a successful brute force or credential stuffing attack. We are not worried about the method by which the TA obtained the password for the `TWORIVERS\Administrator` account. Rather, we're focusing on what occurs once the initial access has been obtained.
-
-## Connecting
-
-1. Access the "Windows Attack Server" in the range.
-    1. Under the "Connections" list, click the "Windows Attack Desktop" link
-    
-Once the session loads in your browser, you will be at the desktop of the Windows Attack Desktop machine.
-
-1. Launch Remote Desktop Connection to begin the attack:
-   `mstsc`
-   - Or simply choose "Start" -> "Remote Desktop Connection"
-1. Click "Show Options" at the bottom-left of the window so that you can fill out the destination machine & user details
-1. Enter `172.31.24.111` for the "Computer" value
-    - This is the IP address of the `TWORIVERS` host. Though this is an internal IP, you are pretending as though this is how the TA is connecting into the victim environment from the outside.
-1. Enter `Administrator` for the "User name" value
-1. Click "Connect" at the bottom-right to initiate the RDP session
-1. When prompted, enter the Administrator user's password:
-    - `Summerishere@2023!`
-
-*CONGRATS!* You are now connected into the victim environment.
-
-Again, we are pretending as though the TA, you in this case, was able to connect to RDP because they knew the Administrator account's password. This could have been obtained via brute forcing, password spraying, credential stuffing, or other means. For now, we're in!
-
-_Let's enumerate!_
-
-### BONUS: Weak passwords
-
-That Administrator account password is weak, right? You might be surprised how often this type of password is found in large-scale environments.
-
-For a list of insecure passwords that you and your users should avoid at all costs, see:
-http://weakpasswords.net/
+Welcome to the common enumeration section! blah blah
 
 ## Beginning Enumeration
 

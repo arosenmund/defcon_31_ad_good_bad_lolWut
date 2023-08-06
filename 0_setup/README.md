@@ -29,9 +29,9 @@ The devices are as follows:
 ### Accounts
 
 | Type | Account | Password | Description |
-| ---- | ---- | ---- |
+| ---- | ---- | ---- | ---- |
 | Local | `PSlearner` | `12qwaszx!@QWASZX` | Local admin account on each host |
-| Local | `Administrator` | `` | Default local admin account on TWORIVERS host |
+| Local | `Administrator` | `Summerishere@2023!` | Default local admin account on TWORIVERS host |
 | Domain | `wheel\mcauthon` | `Ch!ldr3nOfTheL1ght` | "Help Desk" group account |
 | Domain | `wheel\svc-file` | [redacted] | SPN for DRAGONMOUNT |
 | Domain | `wheel\ralthor` | `JustAn0therG!ng3r` | Domain Admin (DA) account |
