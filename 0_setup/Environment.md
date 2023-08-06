@@ -2,11 +2,12 @@
 
 
 - Local Admin PSlearner:12qwaszx!@QWASZX
+- wheel\Administrator 12qwaszx!@QWASZX
 - wheel\mcauthon  Group: Help Desk Ch!ldr3nOfTheL1ght
 - wheel\svc-file  SPN for DRAGONMOUNT  :Password Reset Rights
 - wheel\ralthor  DA JustAn0therG!ng3r 
 - wheel\paybara IAmKetoF0rL!f3 Enterprise Admins
-- psadmin P@ssW0rD!
+- wheel\psadmin P@ssW0rD!
 - Elastic login elastic:TheDestroyerOfWorlds
 
 
