@@ -6,7 +6,7 @@ In this workshop, you will be acting as the threat actor (TA). To begin, you wil
 ## Initial Connections
 
 1. Connect to the "Lighteater" host
-    - Under the "Connections" list, click the "Lighteater" link
+    - Under the "Connections" list, click the "Lighteater" link:
     
         ![](dc31-initial_connection.png)
     
@@ -57,6 +57,8 @@ Let's access some credentials!
         
         1. Do _not_ use "PowerShell 7 (x64)" or double-click "PowerShell 7" on the desktop, as we do not want PS7/Core
     
+            ![](dc31-powershell.png)
+    
     1. Click "Yes" on the UAC prompt
 
 1. Disable Windows Defender (WD):
@@ -92,16 +94,17 @@ Let's access some credentials!
 
     The above commands explained:
     
-        1. Set our required privileges
-        1. Begin logging to a new file named `m.txt`
-            - Log location: `c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`
-        1. List provider credentials
-        1. List WDigest-specific credentials
+    1. Set our required privileges
+    1. Begin logging to a new file named `m.txt`
+        - Log location: `c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`
+    1. List provider credentials
+    1. List WDigest-specific credentials
     
     Let's review the contents of the Mimikatz log file!
     
 1. Open the `m.txt` log in notepad via:
-    1. Start menu -> type `run` -> click "Run (App)" -> Enter
+    
+    - Start menu -> type `run` -> click "Run (App)" -> enter:
     
     ```powershell
     notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt

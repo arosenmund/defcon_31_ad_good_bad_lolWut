@@ -18,7 +18,7 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
 
 1. Use RunAs to run a PowerShell prompt as `WHEEL\Administrator`:
     
-    1. Start menu -> type `run` -> click "Run (App)" -> Enter:
+    1. Start menu -> type `run` -> click "Run (App)" -> enter:
     
     ```powershell
     runas /user:wheel\Administrator powershell.exe
@@ -125,16 +125,16 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
     
     We will now **use Mimikatz to dump this ticket to disk.**
 
-        _NOTE:_ You should already have 1) disabled Windows Defender and 2) extracted Mimikatz. If not, make sure to disable WD extract Mimikatz now:
-        
-        ```powershell
-        Set-MpPreference -DisableRealtimeMonitoring 1
-        ```
-        
-        ```powershell
-        cd c:\Users\Public\Desktop\LAB_FILES\assets\
-        expand-archive ./mimikatz_trunk.zip
-        ```
+    _NOTE:_ You should already have 1) disabled Windows Defender and 2) extracted Mimikatz. If not, make sure to disable WD extract Mimikatz now:
+    
+    ```powershell
+    Set-MpPreference -DisableRealtimeMonitoring 1
+    ```
+    
+    ```powershell
+    cd c:\Users\Public\Desktop\LAB_FILES\assets\
+    expand-archive ./mimikatz_trunk.zip
+    ```
 
 1. Run mimikatz meow:
     
@@ -196,12 +196,12 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
 
 The Mimikatz code base uses a hardcoded file suffix of `.kirbi` when it saves tickets to disk. You can find the relevant lines of code at the following links:
     
-    - (A global constant for the file extension in line 40 of globals.h)[https://github.com/gentilkiwi/mimikatz/blob/82cb7eb2370d63eefc0c0293a9778a0d7e8466d8/inc/globals.h#L40]
-        
-    Code at this line: `#define MIMIKATZ_KERBEROS_EXT L"kirbi"`
+- [A global constant for the file extension in line 40 of globals.h](https://github.com/gentilkiwi/mimikatz/blob/82cb7eb2370d63eefc0c0293a9778a0d7e8466d8/inc/globals.h#L40)
+    
+Code at this line: `#define MIMIKATZ_KERBEROS_EXT L"kirbi"`
 
-    - (The global constant being used for file creation)[https://github.com/gentilkiwi/mimikatz/blob/e10bde5b16b747dc09ca5146f93f2beaf74dd17a/mimikatz/modules/kerberos/kuhl_m_kerberos.c#L242]
-        
+- [The global constant being used for file creation](https://github.com/gentilkiwi/mimikatz/blob/e10bde5b16b747dc09ca5146f93f2beaf74dd17a/mimikatz/modules/kerberos/kuhl_m_kerberos.c#L242)
+    
     Code at this line: `if(filename = kuhl_m_kerberos_generateFileName(i, &pKerbCacheResponse->Tickets[i], MIMIKATZ_KERBEROS_EXT))`
 
 This serves as a great example as to why being able to review source code can prove useful in generating your detection and mitigation methods! Given this finding, you should set up alerts for the creation of any file with a `.kirbi` extension.

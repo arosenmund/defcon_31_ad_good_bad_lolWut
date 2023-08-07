@@ -11,11 +11,12 @@ Now that you have a domain account, you can begin domain enumeration.
 At this point you should still be RDP'd to TWORIVERS from Lighteater (your attack machine). On TWORIVERS, do the following:
 
 1. Use RunAs to run a PowerShell prompt as `WHEEL\Administrator`:
-    1. Start menu -> type `run` -> click "Run (App)" -> Enter:
     
-    ```powershell
-    runas /user:wheel\Administrator powershell.exe
-    ```
+    - Start menu -> type `run` -> click "Run (App)" -> enter:
+    
+        ```powershell
+        runas /user:wheel\Administrator powershell.exe
+        ```
     
     - You will be prompted to `Enter the password for wheel\Administrator:`, which is:
         
@@ -37,8 +38,6 @@ At this point you should still be RDP'd to TWORIVERS from Lighteater (your attac
     Expected output:
     
     ```powershell
-    nltest /domain_trusts /all_trusts
-    
     List of domain trusts:
         0: WHEEL wheel.co (NT 5) (Forest Tree Root) (Primary Domain) (Native)
     The command completed successfully
@@ -55,7 +54,7 @@ At this point you should still be RDP'd to TWORIVERS from Lighteater (your attac
 
 1. Disable Windows Defender:
     
-    ```
+    ```powershell
     Set-MpPreference -DisableRealtimeMonitoring 1
     ```
 
@@ -161,9 +160,9 @@ Using the same PowerShell window:
     expand-archive ./*_Bloodhound.zip
     ```
     
-        - The output file will have a current timestamp. Thus, the above command will account for whatever timestamp was selected for your file.
+    - The output file will have a current timestamp. Thus, the above command will account for whatever timestamp was selected for your file.
     
-    1. `cd *_blood` > then hit Tab > then hit enter
+    - `cd *_blood` > then hit Tab > then hit enter
         
         - When you hit tab after typing the above, PS will auto-select the proper output directory
         - NOTE: If the above does not work, simply use `ls` to find your output folder. It will be named somethin similar to `cd .\20230812183030_BloodHound\`.
@@ -172,7 +171,7 @@ Using the same PowerShell window:
     
     - Your output may look similar to:
     
-    ```
+    ```powershell
     Mode                 LastWriteTime         Length Name
     ----                 -------------         ------ ----
     -a----          8/6/2023   7:15 PM           6448 20230806191536_computers.json
