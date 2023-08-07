@@ -1,16 +1,16 @@
 # Credential Grabbing
 
-In this workshop, you will be acting as the threat actor (TA). To begin, you will be connecting to the "Windows Attack Server" system within the range. This system serves as the external system from which the TA begins their attack.
+In this workshop, you will be acting as the threat actor (TA). To begin, you will be connecting to the "Lighteater" system within the range. This system serves as the external system from which the TA begins their attack.
 - Yes, this system is technically on the same network as the rest of the servers. You're pretending as though it's external to the network. So plet's play pretend and move along ;).
 
 ## Initial Connections
 
-1. Connect to the "Windows Attack Server" host.
-    1. Under the "Connections" list, click the "Windows Attack Desktop" link
+1. Connect to the "Lighteater" host
+    1. Under the "Connections" list, click the "Lighteater" link
     
     ![](dc31-initial_connection.png)
     
-    - Once the session loads in your browser, you will be at the desktop of the Windows Attack Desktop machine. Now that you are here, you will initiate the RDP session to the victim network.
+    - Once the session loads in your browser, you will be at the desktop of the Lighteater machine. Now that you are here, you will initiate the RDP session to the victim network.
     
 1. Launch Remote Desktop Connection to begin the attack:
    1. Use `mstsc` or simply choose "Start" -> "Remote Desktop Connection"

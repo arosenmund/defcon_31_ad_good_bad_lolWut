@@ -8,7 +8,7 @@ BLAH BLAH RYAN FILL ME OUT!
 
 Now that you have a domain account, you can begin domain enumeration.
 
-At this point you should still be RDP'd to TWORIVERS from the attack machine. On TWORIVERS, do the following:
+At this point you should still be RDP'd to TWORIVERS from Lighteater (your attack machine). On TWORIVERS, do the following:
 
 1. Use RunAs to run a PowerShell prompt as `WHEEL\Administrator`:
     1. Start menu -> type `run` -> click "Run (App)" -> Enter `runas /user:wheel\Administrator powershell.exe` -> Enter/Click OK
@@ -98,7 +98,7 @@ Using the same PowerShell window:
     
     When the command finishes, you will see additional output similar to:
     ```
-        2023-08-06T19:15:21.3732609+00:00|INFORMATION|Status: 0 objects finished (+0 0)/s -- Using 37 MB RAM
+    2023-08-06T19:15:21.3732609+00:00|INFORMATION|Status: 0 objects finished (+0 0)/s -- Using 37 MB RAM
     2023-08-06T19:15:36.6673144+00:00|INFORMATION|Consumers finished, closing output channel
     2023-08-06T19:15:36.7306512+00:00|INFORMATION|Output channel closed, waiting for output task to complete
     Closing writers
