@@ -196,13 +196,13 @@ We'll be using a bit of PowerShell to identify potentially susceptible SPNs and 
 
 The Mimikatz code base uses a hardcoded file suffix of `.kirbi` when it saves tickets to disk. You can find the relevant lines of code at the following links:
     
-- [A global constant for the file extension in line 40 of globals.h](https://github.com/gentilkiwi/mimikatz/blob/82cb7eb2370d63eefc0c0293a9778a0d7e8466d8/inc/globals.h#L40)
-    
-Code at this line: `#define MIMIKATZ_KERBEROS_EXT L"kirbi"`
+- [A global constant for the file extension in line 40 of globals.h](https://github.com/gentilkiwi/mimikatz/blob/82cb7eb2370d63eefc0c0293a9778a0d7e8466d8/inc/globals.h#L40):
 
-- [The global constant being used for file creation](https://github.com/gentilkiwi/mimikatz/blob/e10bde5b16b747dc09ca5146f93f2beaf74dd17a/mimikatz/modules/kerberos/kuhl_m_kerberos.c#L242)
+    `#define MIMIKATZ_KERBEROS_EXT L"kirbi"`
+
+- [The global constant being used for file creation](https://github.com/gentilkiwi/mimikatz/blob/e10bde5b16b747dc09ca5146f93f2beaf74dd17a/mimikatz/modules/kerberos/kuhl_m_kerberos.c#L242):
     
-    Code at this line: `if(filename = kuhl_m_kerberos_generateFileName(i, &pKerbCacheResponse->Tickets[i], MIMIKATZ_KERBEROS_EXT))`
+    `if(filename = kuhl_m_kerberos_generateFileName(i, &pKerbCacheResponse->Tickets[i], MIMIKATZ_KERBEROS_EXT))`
 
 This serves as a great example as to why being able to review source code can prove useful in generating your detection and mitigation methods! Given this finding, you should set up alerts for the creation of any file with a `.kirbi` extension.
 - Sure, threat actors _could_ compile their own versions of Mimikatz with custom file suffixes set, but this is not done commonly by TAs such as ransomware affiliates.
