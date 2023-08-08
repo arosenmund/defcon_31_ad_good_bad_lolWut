@@ -1,8 +1,6 @@
 # Advanced Kerberoasting
 
 
-
-
 ## Roast like a Ghost
 
 
