@@ -15,7 +15,7 @@ As you can imagine, even lowly Domain Users need to interact with file services,
 
 ```
 $name=svc-file
-[runas.program]::netonly(("wheel.co","mcauthon","Ch!ldr3nOfTheL1ght",'[string[]]$spns=([adsisearcher]"(&(objectCategory=user)(samaccountname=$name))").findall()|%{$_.properties["serviceprincipalname"]};$spns'));
+[string[]]$spns=([adsisearcher]"(&(objectCategory=user)(samaccountname=$name))").findall()|%{$_.properties["serviceprincipalname"]};$spns
 ```
 
 1. Armed with the list of the user SAM accounts and SPN names, we will perform the attack using the command below. Note that you will need to change the SPN and SAM account for each user (e.g., "`HOST/dragonmount.wheel.co`", "`svc-file`"). Copy the SPN hashes to crack offline.
