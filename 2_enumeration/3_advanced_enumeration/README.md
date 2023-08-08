@@ -1,11 +1,19 @@
 # Advanced Enumeration
 
-On the System:
+1. Remote from LIGHTEATER to the TWORIVERS.wheel.co machine using the wheel\macauthon | pw: Ch!ldr3nOfTheL1ght  acount.  This only works if you are in the security context of a domain user.  If you have system, you can also inject into a domain users process to assume that context, or impersonate.
+   
+2. Open powershell_ise.
 
-1. `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()`
+3. `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()`
 
-1. Now that we have fully interactive access in the PowerShell runspace, we will enumerate the IT domain for potential targets. To ensure the commands are executed under a Kerberos authenticated context, use the `[runas.program]` class pre-loaded into the bindshell. The convention for authenticated commands is `[runas.program]::netonly(("<domain>","<username>","<password>","<command>"))`. All other commands will be executed from the local context of the process. 
+$psISE.PowerShellTabs.Add()
+$psISE.PowerShellTabs.SetSelectedPowerShellTab($psISE.PowerShellTabs[0])
+$a = $psISE.PowerShellTabs[1].InvokeSynchronous("([adsisearcher]`'(&(objectCategory=user))`').findall()")
+$a
 
+
+
+1. Enumerate users and computers.
 ```
 "([adsisearcher]'(&(objectCategory=user))').findall()|convertto-json"
 

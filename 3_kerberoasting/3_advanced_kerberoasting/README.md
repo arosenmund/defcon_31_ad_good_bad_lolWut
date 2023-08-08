@@ -12,7 +12,7 @@ As you can imagine, even lowly Domain Users need to interact with file services,
 1. Now that you have the SAM account names, perform a subsquent query to obtain the SPN names. These will be used to perform targeted kerberoasting attacks by obtaining the kerberos pre-authentication ticket hash from the DC.
 
 ```
-$name=svc-file
+$name="svc-file"
 [string[]]$spns=([adsisearcher]"(&(objectCategory=user)(samaccountname=$name))").findall()|%{$_.properties["serviceprincipalname"]};$spns
 ```
 

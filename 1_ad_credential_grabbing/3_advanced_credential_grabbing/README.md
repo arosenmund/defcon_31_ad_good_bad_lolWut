@@ -19,6 +19,7 @@ Some examples of these techniques are what we will cover here and in the other a
 5. CD into the "custom-procdump" folder.
 6. Execute the nimprocdump.exe program.
 > This will find the process with lsass, and dump it into a file.  Important not to add this kind of info into a command line while you have commandline process auditing on. Which is why you build the options into the executable, and then additional information like PIDs are logged as arguments, which can later be used for detections.
+7. `.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump`
 
 **use nim custom .dll inject maybe, if I can make it work**
 
