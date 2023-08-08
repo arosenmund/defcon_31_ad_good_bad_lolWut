@@ -8,24 +8,36 @@ BLAH BLAH RYAN FILL ME OUT!
 
 Now that you have a domain account, you can begin domain enumeration.
 
-At this point you should still be RDP'd to TWORIVERS from the attack machine. On TWORIVERS, do the following:
+At this point you should still be RDP'd to TWORIVERS from Lighteater (your attack machine). On TWORIVERS, do the following:
 
 1. Use RunAs to run a PowerShell prompt as `WHEEL\Administrator`:
-    1. Start menu -> type `run` -> click "Run (App)" -> Enter `runas /user:wheel\Administrator powershell.exe` -> Enter/Click OK
-    - You will be prompted to `Enter the password for wheel\Administrator:`, at point you will enter the account's password:
-        - `12qwaszx!@QWASZX`
+    
+    - Start menu -> type `run` -> click "Run (App)" -> enter:
+    
+        ```powershell
+        runas /user:wheel\Administrator powershell.exe
+        ```
+    
+    - You will be prompted to `Enter the password for wheel\Administrator:`, which is:
+        
+        ```
+        12qwaszx!@QWASZX
+        ```
     
     A new PowerShell prompt with the title `Administrator: powershell.exe (running as wheel\Administrator` will open. Good!
 
     Now that we are running PowerShell as a domain admin, let's enumerate AD!
 
 1. Run [Nltest](https://for528.com/nltest) to gather domain information
-    1. `nltest /domain_trusts /all_trusts`
-    1. `nltest /dclist:wheel`
+    
+    ```
+    nltest /domain_trusts /all_trusts
+    nltest /dclist:wheel
+    ```
    
     Expected output:
-    ```
-    PS C:\Windows\system32> nltest /domain_trusts /all_trusts
+    
+    ```powershell
     List of domain trusts:
         0: WHEEL wheel.co (NT 5) (Forest Tree Root) (Primary Domain) (Native)
     The command completed successfully
@@ -34,19 +46,31 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
         tarvalon.wheel.co [PDC]  [DS] Site: Default-First-Site-Name
     The command completed successfully
     ```
-    - NOTE: If you see the error `You don't have access to DsBind to wheel (\\TARVALON) (Trying NetServerEnum).`, you are not running PowerShell as the `WHEEL\Administrator` user. Please ensure to run step #1.
+    - NOTE: If you see the error `You don't have access to DsBind to wheel (\\TARVALON) (Trying NetServerEnum).`, you are not running PowerShell as the `WHEEL\Administrator` user. Please ensure to run step #1 above.
    
-   - You now know that the domain name is `WHEEL` and the Primary Domain Controller (PDC) name is `TARVALON`.
+   **You now know that the domain name is `WHEEL` and the Primary Domain Controller (PDC) name is `TARVALON`.**
 
     Just to be safe, as this may be redundant, let's disable Windows Defender:
 
 1. Disable Windows Defender:
-    1. `Set-MpPreference -DisableRealtimeMonitoring 1`
+    
+    ```powershell
+    Set-MpPreference -DisableRealtimeMonitoring 1
+    ```
 
 ## Enumerate via PowerView
 
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!
+
+The PowerView framework has been around for many years and BLAH BLAH BLAH
+
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!
+
 1. Import the PowerView module:
-    ```
+    
+    ```powershell
     cd C:\Users\Public\Desktop\LAB_FILES\assets
     expand-archive PowerSploit.zip
     cd PowerSploit\PowerSploit\Recon
@@ -54,7 +78,8 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
     ```
 
 1. Run the following PowerView modules to enumerate AD:
-    ```
+    
+    ```powershell
     Get-Domain > c:\perflogs\1.txt
     Get-DomainComputer >> c:\perflogs\1.txt
     Get-DomainUser >> c:\perflogs\1.txt
@@ -62,30 +87,46 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
     ```
 
 1. Open the `1.txt` file in Notepad via:
-    1. `notepad c:\perflogs\1.txt`
+    
+    ```
+    notepad c:\perflogs\1.txt
+    ```
 
-    Do not close this PowerShell window. We will be using it further.
+    **Do not close this PowerShell window.** We will be using it further.
 
-RYAN PUT SOME NOTES HERE
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!
 
 ## Enumerate via SharpHound
+
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!
 
 RYAN PUT SOME NOTES HERE RE: what SharpHound is, why it's used, derp derp
 
 Using the same PowerShell window:
 
-1. Run SharpHound to enumerate and collect AD data:
-    ```
+1. Prepare SharpHound for running:
+
+    ```powershell
     cd c:\Users\Public\Desktop\LAB_FILES\assets\
     expand-archive SharpHound-v1.1.1.zip
     cd .\SharpHound-v1.1.1
+    ```
+
+1. Run SharpHound to enumerate and collect AD data:
+    
+    ```powershell
     ./sharphound.exe -d wheel
     ```
+    
     - NOTE: This command may take several minutes to complete
 
-    While the command is running, you will see the following:
-    ```
+    While the command is running, you will see output _similar_ to the following:
+    
+    ```powershell
     PS C:\Users\Public\Desktop\LAB_FILES\assets\SharpHound-v1.1.1> ./sharphound.exe -d wheel
+    
     2023-08-06T19:14:50.1094020+00:00|INFORMATION|This version of SharpHound is compatible with the 4.3.1 Release of BloodHound
     2023-08-06T19:14:50.2863041+00:00|INFORMATION|Resolved Collection Methods: Group, LocalAdmin, Session, Trusts, ACL, Container, RDP, ObjectProps, DCOM, SPNTargets, PSRemote
     2023-08-06T19:14:50.3159447+00:00|INFORMATION|Initializing SharpHound at 7:14 PM on 8/6/2023
@@ -97,8 +138,9 @@ Using the same PowerShell window:
     ```
     
     When the command finishes, you will see additional output similar to:
-    ```
-        2023-08-06T19:15:21.3732609+00:00|INFORMATION|Status: 0 objects finished (+0 0)/s -- Using 37 MB RAM
+    
+    ```powershell
+    2023-08-06T19:15:21.3732609+00:00|INFORMATION|Status: 0 objects finished (+0 0)/s -- Using 37 MB RAM
     2023-08-06T19:15:36.6673144+00:00|INFORMATION|Consumers finished, closing output channel
     2023-08-06T19:15:36.7306512+00:00|INFORMATION|Output channel closed, waiting for output task to complete
     Closing writers
@@ -113,14 +155,23 @@ Using the same PowerShell window:
     ```
     
 1. Review SharpHound output:
-    1. `expand-archive ./*_Bloodhound.zip`
-        - The output file will have a current timestamp. Thus, the above command will account for whatever timestamp was selected for your file.
-    1. `cd *_blood` > then hit Tab > then hit enter
+    
+    ```powershell
+    expand-archive ./*_Bloodhound.zip
+    ```
+    
+    - The output file will have a current timestamp. Thus, the above command will account for whatever timestamp was selected for your file.
+    
+    - `cd *_blood` > then hit Tab > then hit enter
+        
         - When you hit tab after typing the above, PS will auto-select the proper output directory
+        - NOTE: If the above does not work, simply use `ls` to find your output folder. It will be named somethin similar to `cd .\20230812183030_BloodHound\`.
 
 1. List the directory's contents via `ls *`
+    
     - Your output may look similar to:
-    ```
+    
+    ```powershell
     Mode                 LastWriteTime         Length Name
     ----                 -------------         ------ ----
     -a----          8/6/2023   7:15 PM           6448 20230806191536_computers.json
@@ -135,8 +186,11 @@ Using the same PowerShell window:
     
     **Begin review of these files in Notepad while Ryan shows you what you can do in Bloodhound up on the projector.**
 
-
-RYAN FILL ME OUT WITH GENERAL NOTES!!
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!
 
 1. Exfil over RDP
 1. File Deletion
+
+!!!! RYAN FINISH THESE NOTES !!!!
+!!!! RYAN FINISH THESE NOTES !!!!

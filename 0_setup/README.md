@@ -22,7 +22,7 @@ The devices are as follows:
 | TARVALON | 172.31.24.10 | Domain Controller | The primary domain controller (PDC) for the domain |
 | DRAGONMOUNT | 172.31.24.20 | File server | File server for network share mounts and Windows-based backups |
 | THESTEDDING | 172.31.24.42 | ELK server | The blue team's detection server |
-| Windows Attack Server | 172.31.24.234 | General Windows machine | Serves as the attacker's system |
+| Lighteater | 172.31.24.234 | General Windows machine | Serves as the attacker's system |
 
 ![](dc31_network_diagram.png)
 
