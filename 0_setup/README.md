@@ -6,9 +6,23 @@ https://www.pluralsight.com/free
 
 > Make sure you choose the "Free account sign up"
 
+![Free Account Button](./create-free-account-pluralsight.png)
+
 ## Start the Lab
 
-[Instructions to start the lab here]
+Next, you need to browse to the lab itself, [Active Directory Sandbox](www.pluralsight.com/labs/active-directory-sandbox/)
+
+Then click **Start Lab**
+
+Once the next page loads click **Start Environment**
+
+It will take about 3-5 Minutes to load. 
+
+While it is loading you can read the first challenge documentation that includes a link to a short video familiarizing yourself with the lab env.
+
+When it is ready the button will turn green and say **open environment**. 
+
+You are now in the lab environment where will wil conduct all of our workshops.  However!  **ALL OF THE INSTRUCTIONS ARE IN THIS GITHUB NOT IN THE CHALLENGES**
 
 ## Navigating the Lab
 
@@ -24,7 +38,7 @@ The devices are as follows:
 | THESTEDDING | 172.31.24.42 | ELK server | The blue team's detection server |
 | Lighteater | 172.31.24.234 | General Windows machine | Serves as the attacker's system |
 
-![](dc31_network_diagram.png)
+![](./AD-Network-Diagram.png)
 
 ### Accounts
 

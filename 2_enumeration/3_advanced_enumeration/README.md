@@ -4,6 +4,8 @@
    
 2. Open powershell_ise.
 
+![Open ISE](./powershell_ise.png)
+
 3. `[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()`
 
 $psISE.PowerShellTabs.Add()
@@ -11,7 +13,7 @@ $psISE.PowerShellTabs.SetSelectedPowerShellTab($psISE.PowerShellTabs[0])
 $a = $psISE.PowerShellTabs[1].InvokeSynchronous("([adsisearcher]`'(&(objectCategory=user))`').findall()")
 $a
 
-
+![PS AD Enumeration](./powershell-enum.png)
 
 1. Enumerate users and computers.
 ```

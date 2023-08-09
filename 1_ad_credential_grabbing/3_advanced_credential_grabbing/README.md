@@ -1,6 +1,27 @@
 # Advanced Credential Grabbing
 
+Mimikatz is very burned, but you can still use its functionality on your attacker device where you don't have to worry about detections.  No reason the re-invent the wheel here, but custom tooling is required to get around the standard detections built in to most EDRS.
 
+If you are looking to understand what part of various malware or attacker tools is being detected you can use defender check.
+
+This tool will leverage the current database of defender and identify the area of a binary or file that is triggering a given alert.  This only works for static detections, not for heuristic or behavioral detections.
+
+1. On your attacker box, make sure defender is turned off.
+2. Open and administrative powershell prompt and navigate to `C:\Users\Public\Dekstop\LAB_FILES\assets`
+3. Unzip mimikatz and defender check using `expand-archive`
+    ```powershell
+    expand-archive defender-check.zip
+    expand-archive mimikatz_trunk.zip
+    ```
+4. Run the following command to check mimikatz for signatures:
+    ```
+    .\defender-check\defendercheck.exe .\mimikatz_trunk\mimikatz.exe
+    ```
+5. In your results you see X.  
+
+> If you still really wanted to use mimikatz, the process to re-compile a version that did not alert on defender (at least on file write) is to use the output of defender check to identify parts of the code that can be changed not to match the signature.
+
+**potentially use vscode to show how that would go**
 
 ## Custom LSASS Dump
 
@@ -17,8 +38,19 @@ Some examples of these techniques are what we will cover here and in the other a
 4. Unzip the custom-procdump folder.
 `expand-archive .\custom-procdump.zip`
 5. CD into the "custom-procdump" folder.
-6. Execute the nimprocdump.exe program.
+6. Execute the nimprocdump.exe program. 
+```powershell
+.\nimprocdump.exe
+```
+![Proc Dump Output](./nimprocdump.png)
+
 > This will find the process with lsass, and dump it into a file.  Important not to add this kind of info into a command line while you have commandline process auditing on. Which is why you build the options into the executable, and then additional information like PIDs are logged as arguments, which can later be used for detections.
+
+This is detected and the proc.dump file is deleted.  Oh no!
+![Proc Dump Alert](./nimprocdump-alert.png)
+
+> Notice it is not deleting the .exe and the alert is actually focused on that processes dump the proc.dump file.  So likely the alert is focused on the file itselt.
+
 7. `.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump`
 
 **use nim custom .dll inject maybe, if I can make it work**
