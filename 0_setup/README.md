@@ -31,10 +31,9 @@ The devices are as follows:
 | Type | Account | Password | Description |
 | ---- | ---- | ---- | ---- |
 | Local | `PSlearner` | `12qwaszx!@QWASZX` | Local admin account on each host |
-| Local | `Administrator` | `Summerishere@2023!` | Default local admin account on TWORIVERS host |
+| Local | `Administrator` | `Summertimeishere@2023!` | Default local admin account on TWORIVERS host |
 | Domain | `wheel\mcauthon` | `Ch!ldr3nOfTheL1ght` | "Help Desk" group account |
 | Domain | `wheel\svc-file` | [redacted] | SPN for DRAGONMOUNT |
 | Domain | `wheel\ralthor` | `JustAn0therG!ng3r` | Domain Admin (DA) account |
 | Domain | `wheel\paybara` | `IAmKetoF0rL!f3` | Enterprise Admin (EA) accoun |
-| ??? | `psadmin` | `P@ssW0rD!` | ???? |
 | Elastic | `elastic` | `TheDestroyerOfWorlds` | Login for Elasticsearch (on THESTEDDING) |
