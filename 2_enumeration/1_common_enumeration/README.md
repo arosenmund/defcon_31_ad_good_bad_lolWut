@@ -160,9 +160,9 @@ Using the same elevated PowerShell window as you've been using:
     
     - The output file will have a current timestamp. Thus, the above command will account for whatever timestamp was selected for your file.
     
-    - `cd *_blood` > then hit Tab > then hit enter
+    - `cd *_Blood` > then hit Tab > then hit enter
         
-        - When you hit tab after typing the above, PS will auto-select the proper output directory
+        - When you hit tab after typing the above, PS will auto-select the proper output directory. Make sure to type a capitabl "B" or it may not work.
         - NOTE: If the above does not work, simply use `ls` to find your output folder. It will be named somethin similar to `cd .\20230812183030_BloodHound\`.
 
 1. List the directory's contents via `ls *`
@@ -184,11 +184,8 @@ Using the same elevated PowerShell window as you've been using:
     
     **Begin review of these files in Notepad while Ryan shows you what you can do in Bloodhound up on the projector.**
 
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+**Congrats! You have now enumerated the environment via BloodHound!**
 
-1. Exfil over RDP
-1. File Deletion
+Normally the TA would not expand the archive within the environment. Rather, they would simply copy the results archive out via RDP or another method, then import into BloodHound for review.
 
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+Your instructor will now show you some analysis of this data set in Bloodhound.

