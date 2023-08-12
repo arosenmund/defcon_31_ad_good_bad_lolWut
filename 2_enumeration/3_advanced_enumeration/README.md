@@ -59,7 +59,7 @@ $servicepns
 ```powershell
 $psISE.PowerShellTabs.Add()
 $psISE.PowerShellTabs.SetSelectedPowerShellTab($psISE.PowerShellTabs[0])
-$servicepnsdata = $psISE.PowerShellTabs[3].InvokeSynchronous("(([adsisearcher]`'serviceprincipalname=*`'`).findall().properties)")
+$servicepnsdata = $psISE.PowerShellTabs[4].InvokeSynchronous("(([adsisearcher]`'serviceprincipalname=*`'`).findall().properties)")
 $servicepnsdata
 ```
 
