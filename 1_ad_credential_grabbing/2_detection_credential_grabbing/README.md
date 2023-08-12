@@ -3,49 +3,42 @@
 Detecting credential abuse in an Active Directory environment is vital to safeguard organizational assets, protect user identities, and prevent unauthorized access that can lead to data breaches and system compromises.
 
 To detect credential abuse, we'll be looking for Mimikatz and credential stealing activity using the following methods:
-- Token Adjustment (Windows Event ID 4703)
 - Process Creation (Sysmon Event ID 1)
 - Registry Changes (Sysmon Event ID 13)
 - File detections (Direct file system query)
 
-## Token Adjustment
+| Environment Note: Sysmon has been installed and configured in this environment to provide additional logging.
 
-| Note: Additional logging is required for Event ID 4703.
+**We will be using the Client endpoint as our "Defender Endpoint." Start by logging into the Client (TWORIVERS).**
 
-1. We'll create a new variable for Event ID 4703 (Token Adjustment). And if we just list out all these events, it really shows how noisy this event is.
+## Registry Value Set (Disabing Windows Defender)
+
+1. Start by creating a variable for Sysmon Event ID 13 (Registry value set)
 ```powershell
-## Look for Token Adjustement
-$event4703 = get-winevent -logname Security | where {$_.id -eq '4703'}
-# Look at all the events:
-$event4703
+$event13 = get-winevent -logname Microsoft-Windows-Sysmon/Operational | where {$_.id -eq '13'}
+```
+| *Note:* This will only include the logs from when you create this variable. If you re-run commands and want to see the updated logs, re-run this command.
+
+| *Note 2:* You may get an error talking about a parameter reference - this is ok!
+
+2. Filter for the target object of "DisableRealtimeMonitoring" being set (or changed)
+```powershell
+$event13 | where {$_.message -match "DisableRealtimeMonitoring"} 
 ```
 
-2. What we are really interested in, is this event 4703 specifically where SeDebugPrivilege is used, so let's filter on that. 
+3. Let's expand the message information to get more details
 ```powershell
-# Filter down a bit:
-$event4703 | where {$_.message -match 'SeDebugPrivilege'}
+$event13 | where {$_.message -like "*DisableRealtimeMonitoring*"} | select -ExpandProperty message
 ```
 
-3. Let's expand the message, filter on the process name, and see what's going on. 
-```powershell
-# Expand the message:
-$event4703 | where {$_.message -match 'SeDebugPrivilege'} | select -ExpandProperty message | findstr "Process"
-```
+**Analysis Notes:**
+- What is MsMpEng.exe?
+    - This is a core process of Windows Defender, responsible for scanning files for malware when they are accessed, scheduling and performing system scans, updating malware definitions, and other related tasks.
+    - In this instance, we see this listed as the "Image," or executable, being used to modify the registry.
+- The "TargetObject" field in the Registry Key being modified.
+- The "Details" field shows the DWORD being set to a value of "1"
+- Based on all of this, we can determine what actually took place here! Research/Googling may be required!
 
-4. Unfortunately, it looks like OneDrive and Firefox are both using this debug privilege to accomplish something, so let's filter those out. Now we have a much cleaner list to sift through. 
-```powershell
-# Filter a bit more:
-$event4703 | where {$_.message -match 'SeDebugPrivilege' -and $_.message -notmatch 'firefox.exe' -and $_.message -notmatch "OneDriveSetup.exe"} | select -ExpandProperty message
-```
-
-| Note: The thing that should stand out here is PowerShell. 
-
-5. Let's change our filter to focus in on the PowerShell. 
-```powershell
-$event4703 | where {$_.message -match 'SeDebugPrivilege' -and $_.message -match 'powershell.exe'} | select -ExpandProperty message
-```
-
-This is in fact the Mimikatz activity. Unfortunately there's no clear indication of that because it was executed using PowerShell, but this is the process you'd need to use when narrowing in on anomalous behavior. And it doesn't make this any easier when vendors like Microsoft and Mozilla are using their applications in weird ways. 
 
 ## Process Creation
 
@@ -99,9 +92,9 @@ Some notes on WDigest:
 - The main feature of WDigest is that it allows for credentials to be remembered by the system, so users are not repeatedly prompted to input their credentials. However, this is also a potential security concern, as the credentials are stored in memory, making them susceptible to being dumped by malicious software and used in what's known as "pass-the-hash" attacks.
 - Because of these security risks, Microsoft introduced changes in Windows 8.1 and Windows Server 2012 R2 to not store passwords in memory by default, although this can be changed with a registry setting. In addition, in the Windows 10 operating system, WDigest is disabled by default.
 
-1. I think you've got these steps down by now!
+I think you've got these steps down by now!
 ```powershell
-# Set the variable
+# Set the variable (Not necessary if you did this up above)
 $event13 = get-winevent -logname Microsoft-Windows-Sysmon/Operational | where {$_.id -eq '13'}
 
 # Filter for WDigest
@@ -115,36 +108,48 @@ Using this, we can see the malcious activity where WDigest is being reenabled. A
 
 ---
 
-# Additional Notes
-
 For the workshop, this is the end this section's instructions. Below is additional information for your enjoyment! 
 
-Using Mimikatz, an adversary can export the cached tickets to be used in a PTT (Pass The Ticket) attack or to attempt cracking the hashes.
-For example:
+---
+
+# Additional Notes
+
+## Token Adjustment
+
+Auditing for Token Adjustments can be enabled, which will create a new security log: Event ID 4703. It's worth noting that this event can be extremely noisy and difficult to discover malicious traffic. However, this is an additional method if Sysmon or other data sources are unavailable.
+
+| Note: Additional logging is required for Event ID 4703. This is not currently enabled in the lab environment.
+
+Here is an example workflow:
+
 ```powershell
-.\mimikatz.exe "log log.txt" "privilege::debug" "sekurlsa::tickets /export" exit
+# Create a new variable for Event ID 4703 (Token Adjustment). And if we just list out all these events, it really shows how noisy this event is.
+$event4703 = get-winevent -logname Security | where {$_.id -eq '4703'}
+# Look at all the events:
+$event4703
+
+# What we are really interested in, is this event 4703 specifically where SeDebugPrivilege is used, so let's filter on that. 
+$event4703 | where {$_.message -match 'SeDebugPrivilege'}
+
+# Let's expand the message, filter on the process name, and see what's going on. 
+$event4703 | where {$_.message -match 'SeDebugPrivilege'} | select -ExpandProperty message | findstr "Process"
+
+# Unfortunately, it looks like OneDrive and Firefox are both using this debug privilege to accomplish something, so let's filter those out. Now we have a much cleaner list to sift through. 
+$event4703 | where {$_.message -match 'SeDebugPrivilege' -and $_.message -notmatch 'firefox.exe' -and $_.message -notmatch "OneDriveSetup.exe"} | select -ExpandProperty message
+
+# Note: The thing that should stand out here is PowerShell. 
+
+# Let's change our filter to focus in on the PowerShell. 
+$event4703 | where {$_.message -match 'SeDebugPrivilege' -and $_.message -match 'powershell.exe'} | select -ExpandProperty message
 ```
 
-When this is done, Mimikatz will store the tickets in a ".kirbi" format. The use of defensive tools or automation can be used to alert on this indicator, however this is a complicated and/or resource intestive task to accomplish at scale. 
+This workflow can identify Mimikatz activity. Unfortunately there's no clear indication of that because it was executed using PowerShell, but this is the process you'd need to use when narrowing in on anomalous behavior. And it doesn't make this any easier when vendors like Microsoft and Mozilla are using their applications in weird ways. 
 
-For ad-hoc analysis, you can perform a direct query on the filesystem using the following technique:
-```powershell
-cmd /c where /r c:\perflogs *.kirbi 
-```
-
-Detecting a specific file system or file type across thousands of endpoints in an enterprise environment can be complex due to several reasons:
-- Variety of Systems: An enterprise environment usually consists of different types of operating systems, each with their own file systems. For example, Windows uses NTFS or FAT32, Linux uses Ext4, XFS or Btrfs, and MacOS uses HFS+ or APFS. Each of these file systems has its own unique structure and metadata which adds to the complexity.
-- Large Scale: Enterprises often have thousands of computers, servers, and other devices. Each of these devices can have a multitude of files, leading to billions of files to scan in total. This is a resource-intensive task in terms of both computing power and network bandwidth.
-- Distributed Nature: Not all the devices are always connected to the network, and the devices can be geographically dispersed. This further complicates the process of file system detection as you would need to scan systems that are intermittently connected or are in different network segments or VPNs.
-- Permission Issues: Different files and directories may have different access permissions. As a result, not all files may be accessible for scanning, especially if the scanning process does not have the necessary permissions.
-- Security Considerations: In enterprise environments, there are usually strict security policies and regulations. This might limit the methods and tools you can use to scan the file systems. Additionally, any scanning activity needs to be done in a way that does not compromise the security of the system.
-- Performance Impact: Scanning a file system can be a heavy operation. It needs to be done in a way that minimizes the impact on the system's performance, particularly during peak usage hours.
-- File Type Identification: Identifying a specific file type is not just about looking at the file extension. It often involves reading the file headers or using other methods to determine the file type, which can be complicated and time-consuming.
-- Changes Over Time: The state of a file system is not static. Files get created, modified, and deleted all the time. This dynamic nature adds another level of complexity to the detection process.
+---
 
 # Defensive Measures
 
-Serveral methods can be effective as defensive measures against credential stealing and abuse in an Active Directory environment:
+Several methods can be effective as defensive measures against credential stealing and abuse in an Active Directory environment:
 
 Multi-Factor Authentication (MFA): 
 - Use MFA whenever possible. It makes it much harder for an attacker to use stolen credentials because they would need not just the password but also the second factor.
