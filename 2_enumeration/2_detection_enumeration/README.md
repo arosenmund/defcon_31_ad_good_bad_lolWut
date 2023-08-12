@@ -27,7 +27,7 @@ $event1 | where {$_.message -match "nltest"} | select -ExpandProperty message | 
 
 4. (Optional) Repeat for SharpHound
 ```powershell
-$event1 | where {$_.message -like "*SharpHound*" | select -ExpandProperty message}
+$event1 | where {$_.message -like "*SharpHound*"} | select -ExpandProperty Message
 ```
 
 | Analysis: While this is a faily basic method to look for specific processes being execution, obfuscation of the filename can make this more difficult. However, we can use this to understand the behaviors of how these programs operate. 
