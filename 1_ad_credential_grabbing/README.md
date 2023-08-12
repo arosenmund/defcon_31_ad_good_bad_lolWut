@@ -4,7 +4,7 @@ When a TA obtains access to an environment, they do so under some form of accoun
 
 In our case, you as the TA will obtain access to the victim environment via RDP using a local administrator account on the machine. Thus you will need to elevate overall privileges by gaining access to more privileged accounts. We will be showing you how the low-skilled attacker does so (*AHEM* ransomware *AHEM*), showing you how to detect these methods, and then wrap with much more advanced and custom-crafted methods to accomplish the task.
 
-## [Common Credential Grabbing Attacks](./1_credentual_grabbing/README.md)
+## [Common Credential Grabbing Attacks](./1_credential_grabbing/README.md)
 
 Our initial credential grabbing attacks will occur by way of tools such as [Mimikatz](https://github.com/gentilkiwi/mimikatz). If you've spent much time working in infosec, the term "Mimikatz" should make you think "child's first attack tool." The tool is day one content in pentesting 101 courses. While signatures for Mimikatz are widely available, TAs still find quite a bit of success with the tool. We incident responders often find the tool in AV logs, as TAs often attempt to bring the tool in before they are even able to disable AV/EPP/EDR/etc.
 
