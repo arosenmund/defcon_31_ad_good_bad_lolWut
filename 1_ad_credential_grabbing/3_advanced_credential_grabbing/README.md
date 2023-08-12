@@ -45,9 +45,16 @@ This is detected and the proc.dump file is deleted.  Oh no!
 
 > Notice it is not deleting the .exe and the alert is actually focused on that processes dump the proc.dump file.  So likely the alert is focused on the file itselt.
 
-7. This time, lets simply rename the lsass.dump file.  `.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump`
+7. This time, lets simply rename the lsass.dump file.  
+```powershell
+.\nimprocdump.exe; rename-item c:\proc.dump c:\not.dump
+```
 
 > There are still alerts but the lsass.dump file is not deleted.
+> Notice what happens when we run with cmd.exe
+> How easy is it to change the file?
+
+Let's talk about what else we should do.
 
 
 
