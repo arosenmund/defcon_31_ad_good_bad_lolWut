@@ -261,18 +261,36 @@ This serves as a great example as to why being able to review source code can pr
     
 Congrats! You've now dumped your in-memory tickets to disk. Your next step would be to crack the kirbi files.
 
-## BONUS: kirbi2john Cracking Method
+## BONUS: Cracking Methods
+
+### hashcat
+
+Ryan will show this method on his machine :).
+
+```
+$ hashcat -m 13100 hashes.txt super_secure_passwords.txt 
+```
+
+### john
 
 If you want to use `john` to do the cracking, you can do see using a method similar to the following:
 
 ```
 kirbi2john.py 2-40a10000-Administrator@HOST~DRAGONMOUNT.wheel.co-WHEEL.CO.kirbi > svc-file_krb5tgs.txt
 
-john --wordlist=./rockyou.txt svc-file_krb5tgs.txt
+john --format:krb5tgs hashes.txt --wordlist=./super_secure_passwords.txt
 ```
 
 Above we run [kirbi2john.py](https://github.com/nidem/kerberoast/blob/master/kirbi2john.py) to convert the kirbi files to a format that `john` can use. We then run `john` and provide an example wordlist (like the classic `rockyou.txt` password dump) along with our converted hashes file.
 
-## BONUS: tgsrepcrack.py Cracking Method
+### tgsrepcrack.py
 
-Ryan will walk you through this process
+[tgsrepcrack.py](https://github.com/nidem/kerberoast/blob/master/tgsrepcrack.py) is a thing, but... just use hashcat. In fact, the tool tells you as much, as the following comes straight from the script!
+
+```
+print('''
+
+    USE HASHCAT, IT'S HELLA FASTER!!
+
+''')
+```
