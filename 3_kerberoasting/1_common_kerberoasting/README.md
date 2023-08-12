@@ -1,14 +1,12 @@
 # Common Kerberoasting
 
-RYAN> Fill this all out and make it purty, boyfriend!!!
-RYAN> Fill this all out and make it purty, boyfriend!!!
-RYAN> Fill this all out and make it purty, boyfriend!!!
+Kerberoasting is an attack that takes advantage of the fact that many organizations do not use Managed Service Accounts in AD. Rather, they assign a Service Principal Name (SPN), often referred to as a "spin", to a general AD account. This effectively makes a general AD user account a service account. However, it leaves the account vulnerable to the kerberoasting attack.
 
-What's a SPN?! Who cares? What's a MSA? AND WHY ARE THEY IMPORTANT?!!!
+Any domain account can request and receive a Kerberos ticket for an account that is used as a service account from the ticket granting sevice (TGS). The trick here is that these tickets are encrypted using the NTLM hash of the service account. A kerberoasting attack takes place when a domain user requests and receives such a ticket in memory, dumps the ticket to disk, and then cracks the NTLM hash to then obtain the cleartext NTLM password.
 
-Why is Kerberoasting effective? How to prevent?
+That last bit makes judging the effectiveness of kerberoasting quite difficult, as the final step of the attack often happens "offline," meaning outisde the network environment. Though you may detect that a kerberoasting attack was under way, you will not have access to any forensic data that denotes the success or failure of the final stage of the attack. Was the TA able to crack the hash? You can make assumptions based on account use, but you won't know for sure.
 
-**BRANDON>** Just commands for now, but this is what I'll be running :).
+Enough of the preamble, let's get to it!
 
 ## Kerberoasting via Rubeus
 
