@@ -23,7 +23,7 @@ This tool will leverage the current database of defender and identify the area o
 Some examples of these techniques are what we will cover here and in the other adanced modules.
 
 1. From the Lighteater (Attacker Box), RDP into the TWORIVERS (client) with the local administrator account.  TWORIVERS\Administrator:Summerishere@2023!
-2. Ensure windows defender is turned back on. `Set-MpPreference -DisableRealtimeMonitoring 1`
+2. Ensure windows defender is turned back on. `Set-MpPreference -DisableRealtimeMonitoring 0`
 2. Open an Administrative powershell terminal.
 3. Change directory `cd c:\Users\Public\Desktop\LAB_FILES\assets`
 4. Expand the archive for mimikatz again.
