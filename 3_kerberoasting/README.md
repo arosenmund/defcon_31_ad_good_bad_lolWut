@@ -6,6 +6,7 @@ Any domain account can request and receive a Kerberos ticket for an account that
 
 You might ask: "Why not have 'super secure' (LONG!) passwords for service accounts? Isn't that a norm?" Yes and NO! Sadly.
 
+
 ## [Common Kerberoasting Tools](./1_common_kerberoasting/README.md)
 
 We begin our adventures into kerberoasting with, you guessed it, some well known tools that automate most of the attack. We first begin with Rubeus, which literally automates the task from A-Z. We will then show you a way to perform the attack with good 'ol Mimikatz, with a little bit of love from PowerShell.
