@@ -1,5 +1,7 @@
 # Detecting Credential Grabbing
 
+Detecting credential abuse in an Active Directory environment is vital to safeguard organizational assets, protect user identities, and prevent unauthorized access that can lead to data breaches and system compromises.
+
 To detect credential abuse, we'll be looking for Mimikatz and credential stealing activity using the following methods:
 - Token Adjustment (Windows Event ID 4703)
 - Process Creation (Sysmon Event ID 1)
@@ -8,7 +10,6 @@ To detect credential abuse, we'll be looking for Mimikatz and credential stealin
 
 ## Token Adjustment
 
-| TODO: Test after logging is enabled
 | Note: Additional logging is required for Event ID 4703.
 
 1. We'll create a new variable for Event ID 4703 (Token Adjustment). And if we just list out all these events, it really shows how noisy this event is.
