@@ -29,7 +29,7 @@ In this workshop, you will be acting as the threat actor (TA). To begin, you wil
 1. When prompted, enter the Administrator user's password:
     
     ```
-    Summerishere@2023!
+    Summertimeishere@2023!
     ```
     
     - When prompted, click "Yes" to connect to the remote host.
