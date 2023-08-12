@@ -4,7 +4,7 @@ TAs typically enumerate a victim's AD environment in order to learn more about t
 
 ## [Common Active Directory Enumeration Techniques](./1_common_enumeration/README.md)
 
-Ransomware and other low-level actors often use well-known, easy-to-detect tools such as AdFind, AdRecon, PowerView and BloodHound to perform enumeration. In the common enumeration section, you will learn how to use PowerView and SharpHound, the most common collector used for BloodHound. The term "Bring Your Own Tools" (BYOT) refers to when TAs bring such tools into a victim environment. BYOT methods include downloading via file sharing sites (see (https://for528.com/lots)[https://for528.com/lots]) for commonly used sites), copying files in via RDP, and more. In our case, we will be emuating a TA copyin files into the network via an RDP session.
+Ransomware and other low-level actors often use well-known, easy-to-detect tools such as AdFind, AdRecon, PowerView and BloodHound to perform enumeration. In the common enumeration section, you will learn how to use PowerView and SharpHound, the most common collector used for BloodHound. The term "Bring Your Own Tools" (BYOT) refers to when TAs bring such tools into a victim environment. BYOT methods include downloading via file sharing sites (see [https://for528.com/lots](https://for528.com/lots)) for commonly used sites), copying files in via RDP, and more. In our case, we will be emuating a TA copyin files into the network via an RDP session.
 
 ## [Detecting Active Directory Enumeration](./2_detection_enumeration/README.md)
 
