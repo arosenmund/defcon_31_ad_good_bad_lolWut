@@ -7,37 +7,6 @@ To detect Active Directory Enumeration, we'll be looking for anomalous activity 
 - Process Creation (Sysmon Event ID 1)
 - PowerShell Script Block Logging (Windows Event ID 4104)
 
-| Environment Note: Sysmon has been installed and configured in this environment to provide additional logging.
-
-**We will be using the Client endpoint as our "Defender Endpoint." Start by logging into the Client (TWORIVERS).**
-
-## Registry Value Set (Disabing Windows Defender)
-
-1. Start by creating a variable for Sysmon Event ID 13 (Registry value set)
-```powershell
-$event13 = get-winevent -logname Microsoft-Windows-Sysmon/Operational | where {$_.id -eq '13'}
-```
-| *Note:* This will only include the logs from when you create this variable. If you re-run commands and want to see the updated logs, re-run this command.
-
-| *Note 2:* You may get an error talking about a parameter reference - this is ok!
-
-2. Filter for the target object of "DisableRealtimeMonitoring" being set (or changed)
-```powershell
-$event13 | where {$_.message -match "DisableRealtimeMonitoring"} 
-```
-
-3. Let's expand the message information to get more details
-```powershell
-$event13 | where {$_.message -like "*DisableRealtimeMonitoring*"} | select -ExpandProperty message
-```
-
-**Analysis Notes:**
-- What is MsMpEng.exe?
-    - This is a core process of Windows Defender, responsible for scanning files for malware when they are accessed, scheduling and performing system scans, updating malware definitions, and other related tasks.
-    - In this instance, we see this listed as the "Image," or executable, being used to modify the registry.
-- The "TargetObject" field in the Registry Key being modified.
-- The "Details" field shows the DWORD being set to a value of "1"
-- Based on all of this, we can determine what actually took place here! Research/Googling may be required!
 
 ## Process Creation (nltest and SharpHound execution)
 
@@ -89,9 +58,11 @@ $event4104 | where {$_.message -like "PowerView*"} | findstr PowerView | findstr
 
 ---
 
-# Additional Notes
-
 For the workshop, this is the end this section's instructions. Below is additional information for your enjoyment! 
+
+---
+
+# Additional Notes
 
 **What about RDP?**
 Detecting malicious activity within RDP traffic can be challenging for several reasons:
@@ -104,7 +75,7 @@ Detecting malicious activity within RDP traffic can be challenging for several r
 
 # Defensive Measures
 
-Serveral methods can be effective as defensive measures against enumeration techniques in an Active Directory environment:
+Several methods can be effective as defensive measures against enumeration techniques in an Active Directory environment:
 
 Least Privilege: 
 - By adhering to the principle of least privilege, each user is given the minimum levels of access – or permissions – they need to perform their job functions. This limits the ability of unauthorized users, malicious insiders, or compromised accounts to access, manipulate, or enumerate sensitive data within the AD. If an account is compromised, the damage potential is limited because the account does not have unnecessary permissions.

