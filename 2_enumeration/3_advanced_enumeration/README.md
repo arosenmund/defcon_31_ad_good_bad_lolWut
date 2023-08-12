@@ -47,7 +47,7 @@ This will run through the merlin socks5 proxy, leveraging either schduled tasks 
     ([adsisearcher]"objectcategory=user").findall()
     ([adsisearcher]"objectcategory=computer").findall()
     ([adsisearcher]"serviceprincipalname=*").findall().properties.serviceprincipalname
-    (([adsisearcher]"serviceprincipalname=*").findall(),properties)|fl*
+    (([adsisearcher]"serviceprincipalname=*").findall().properties) | fl
    ```
    
 2. Now with the domain user, collect accounts with SPNs.
