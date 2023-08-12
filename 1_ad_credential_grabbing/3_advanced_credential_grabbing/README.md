@@ -13,21 +13,6 @@ This tool will leverage the current database of defender and identify the area o
 > - the dump file itself is signatured by defender, much less the tools that generate it
 
 
-1. On the client box (LIGHTEATER), logged in directly as pslearner.
-2. Open and administrative powershell prompt and navigate to `C:\Users\Public\Desktop\LAB_FILES\assets`
-3. Unzip mimikatz and defender check using `expand-archive`
-    ```powershell
-    expand-archive defender-check.zip
-    expand-archive mimikatz_trunk.zip
-    ```
-4. Run the following command to check mimikatz for signatures:
-    ```
-    .\defender-check\defendercheck.exe .\mimikatz_trunk\mimikatz.exe
-    ```
-5. In your results you see X.  
-
-> If you still really wanted to use mimikatz, the process to re-compile a version that did not alert on defender (at least on file write) is to use the output of defender check to identify parts of the code that can be changed not to match the signature.
-
 ## Custom LSASS Dump
 
 > Turning defender off, can either be difficult, or not guarunteed to stay that way due to domain policies, or even other EDR implementations. So what to do?
@@ -41,7 +26,10 @@ Some examples of these techniques are what we will cover here and in the other a
 2. Ensure windows defender is turned back on. `Set-MpPreference -DisableRealtimeMonitoring 1`
 2. Open an Administrative powershell terminal.
 3. Change directory `cd c:\Users\Public\Desktop\LAB_FILES\assets`
-4. Unzip the custom-procdump folder.
+4. Expand the archive for mimikatz again.
+`expand-archive mimikatz_trunk.zip`
+> Note: https://github.com/matterpreter/DefenderCheck
+5. Unzip the custom-procdump folder.
 `expand-archive .\custom-procdump.zip`
 5. CD into the "custom-procdump" folder.
 6. Execute the nimprocdump.exe program. 
