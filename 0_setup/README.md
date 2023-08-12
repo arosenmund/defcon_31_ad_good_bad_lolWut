@@ -50,4 +50,5 @@ The devices are as follows:
 | Domain | `wheel\svc-file` | [redacted] | SPN for DRAGONMOUNT |
 | Domain | `wheel\ralthor` | `JustAn0therG!ng3r` | Domain Admin (DA) account |
 | Domain | `wheel\paybara` | `IAmKetoF0rL!f3` | Enterprise Admin (EA) accoun |
+| Domain | `wheel\felixb`  | `P@ssW0rD!` | Domain User |
 | Elastic | `elastic` | `TheDestroyerOfWorlds` | Login for Elasticsearch (on THESTEDDING) |
