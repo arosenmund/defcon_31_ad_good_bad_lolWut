@@ -2,11 +2,11 @@
 
 Welcome to the common enumeration section!
 
-BLAH BLAH RYAN FILL ME OUT!
+Now that you have a domain account, you can begin domain enumeration. Here in the common enumeration section, you will be using tooling common to ransomware actors. These tools are noisy! Not only do detections exist, but so do prevention methods. Even though these methods are well-known and recycled time and time again by such actors, the sad truth is that they are quite effective. Our hope here is to show you how these methods work so that you can help prevent and detect them in your networks.
 
 ## Beginning Enumeration
 
-Now that you have a domain account, you can begin domain enumeration.
+We will begin with a common enumeration tool included on most DCs called `nltest`. This tool provides basic information concerning domain trusts and DC names. 
 
 At this point you should still be RDP'd to TWORIVERS from Lighteater (your attack machine). On TWORIVERS, do the following:
 
@@ -60,13 +60,9 @@ At this point you should still be RDP'd to TWORIVERS from Lighteater (your attac
 
 ## Enumerate via PowerView
 
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+[PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1) is a part of the (now defunct, yet still used widely) [PowerSploit](https://github.com/PowerShellMafia/PowerSploit) framework made by a group named the PowerShell Mafia. The framework has been around for many years and is a go-to for many TAs. While PowerSploit offers numerous attack tools such Invoke-Mimikatz and Invoke-Shellcode, we will be focusing on PowerView, which is a stand-alone, importbale PS module.
 
-The PowerView framework has been around for many years and BLAH BLAH BLAH
-
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+Before we can use PowerView, we must import the module. We will be importing a module from disk, as we are pretending as though the TA copied the file into the victim envrionment via RDP. Another method used commonly is importation of the script following a download via a PS "download cradle," which is a fun term used to reference a string of PS code that can download data from the internet. Again, we'll be loading the file directly. Let's do it!
 
 1. Import the PowerView module:
     
@@ -94,17 +90,19 @@ The PowerView framework has been around for many years and BLAH BLAH BLAH
 
     **Do not close this PowerShell window.** We will be using it further.
 
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+**CONGRATS! You have enumerated AD via PowerView!** 
+
+Your instructor will walk through some of the data in the `1.txt` file.
 
 ## Enumerate via SharpHound
 
-!!!! RYAN FINISH THESE NOTES !!!!
-!!!! RYAN FINISH THESE NOTES !!!!
+[BloodHound](https://github.com/BloodHoundAD/BloodHound) is one of the most common enumeration tools you will see in attacks such as ransomware campaigns. The best description of BloodHound comes directly from the author's via their GitHub repo:
 
-RYAN PUT SOME NOTES HERE RE: what SharpHound is, why it's used, derp derp
+"BloodHound uses graph theory to reveal the hidden and often unintended relationships within an Active Directory or Azure environment. Attackers can use BloodHound to easily identify highly complex attack paths that would otherwise be impossible to quickly identify. Defenders can use BloodHound to identify and eliminate those same attack paths. Both blue and red teams can use BloodHound to easily gain a deeper understanding of privilege relationships in an Active Directory or Azure environment."
 
-Using the same PowerShell window:
+While BloodHound is the tool that does the relationship mapping, the tool requires a data set provided through a collector. A few collectors exist, but the most widely used collector is [SharpHound](https://github.com/BloodHoundAD/SharpHound), which is exactly what we'll be using.
+
+Using the same elevated PowerShell window as you've been using:
 
 1. Prepare SharpHound for running:
 
