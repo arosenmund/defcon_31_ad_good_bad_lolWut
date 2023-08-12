@@ -10,7 +10,7 @@ https://www.pluralsight.com/free
 
 ## Start the Lab
 
-Next, you need to browse to the lab itself, [Active Directory Sandbox](www.pluralsight.com/labs/active-directory-sandbox/)
+Next, you need to browse to the lab itself, [Active Directory Sandbox](https://app.pluralsight.com/labs/detail/3942ee4b-8b01-4001-a731-c7b447e217c0/toc)
 
 Then click **Start Lab**
 

