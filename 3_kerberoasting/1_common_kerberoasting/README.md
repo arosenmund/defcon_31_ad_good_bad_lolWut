@@ -232,7 +232,7 @@ The Mimikatz code base uses a hardcoded file suffix of `.kirbi` when it saves ti
 This serves as a great example as to why being able to review source code can prove useful in generating your detection and mitigation methods! Given this finding, you should set up alerts for the creation of any file with a `.kirbi` extension.
 - Sure, threat actors _could_ compile their own versions of Mimikatz with custom file suffixes set, but this is not done commonly by TAs such as ransomware affiliates.
 
-`Review the extracted kirbi files`
+**Review the extracted kirbi files**
 
 1. Exit Mimikatz:
     
